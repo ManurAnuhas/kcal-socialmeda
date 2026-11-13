@@ -1092,6 +1092,7 @@ const KCAL_TAGS = {
 
 let acc = {};
 let sel = {};
+let accSecrets = {};
 let media = { post: [], reel: null };
 let when = 'now';
 let posts = [];
@@ -1113,6 +1114,7 @@ let isAdminAuthenticated = false;
 // Load stored state
 try {
   acc = JSON.parse(localStorage.getItem('ps_acc') || '{}');
+  accSecrets = JSON.parse(localStorage.getItem('ps_secrets') || '{}');
   posts = JSON.parse(localStorage.getItem('ps_posts') || '[]');
   const storedTheme = localStorage.getItem('ps_theme');
   if (storedTheme) document.documentElement.setAttribute('data-theme', storedTheme);
@@ -1267,10 +1269,12 @@ function openAccountModal(id) {
   $('#btnOAuthText').textContent = p.btnText || ('Log in to ' + p.n);
   $('#btnOAuthAction').className = 'btn ' + (p.btnClass || '');
   
+  // Prefill existing secrets if saved
+  $('#mtk').value = (accSecrets[id] && accSecrets[id].token) || '';
+  $('#mid').value = (accSecrets[id] && accSecrets[id].ext_id) || '';
+
   // Reset tabs
   $('#tabDirectLogin').click();
-  $('#mtk').value = '';
-  $('#mid').value = '';
   $('#md').classList.add('show');
 }
 
@@ -1377,8 +1381,15 @@ $('#mo').onclick = async () => {
     if (!/^[@\w]/.test(h)) h = 'KCAL Channel';
   } else if (h[0] !== '@') h = '@' + h;
 
+  const tk = $('#mtk').value.trim();
+  const mid = $('#mid').value.trim();
+
+  if (tk || mid) {
+    accSecrets[cur] = { token: tk, ext_id: mid };
+    try { localStorage.setItem('ps_secrets', JSON.stringify(accSecrets)); } catch(e){}
+  }
+
   if (sb) {
-    const tk = $('#mtk').value.trim(), mid = $('#mid').value.trim();
     if ((cur === 'ig' || cur === 'fb') && (!tk || !mid)) {
       return toast('Meta Graph API Token and ID are required');
     }
@@ -1391,7 +1402,7 @@ $('#mo').onclick = async () => {
   save();
   $('#md').classList.remove('show');
   render();
-  toast('Verified and synced ' + h + ' ✓');
+  toast(tk ? 'Live API Token & Page ID saved for ' + h + ' ✓' : 'Verified and synced ' + h + ' ✓');
 };
 
 /* =======================================================
@@ -1857,24 +1868,101 @@ $('#go').onclick = () => {
     return;
   }
 
-  // Standalone instant publish
+  // Standalone publish (with Direct Meta Graph API publishing if token configured)
   let done = 0;
-  jobs.forEach((j, i) => {
+  jobs.forEach(async (j, i) => {
+    const s = $('#s' + i);
+    const b = $('#b' + i);
+
+    // If publishing to Facebook Page and real token is configured:
+    if (j.p.id === 'fb' && accSecrets.fb && accSecrets.fb.token && accSecrets.fb.ext_id) {
+      s.textContent = 'Sending to Meta Graph API…';
+      s.style.color = 'var(--acc)';
+      b.style.width = '60%';
+      try {
+        const res = await publishDirectFB(accSecrets.fb.ext_id, accSecrets.fb.token, $('#cap').value, media);
+        b.style.width = '100%';
+        s.innerHTML = `<a href="https://facebook.com/${res.id || accSecrets.fb.ext_id}" target="_blank" style="color:var(--ok);font-weight:700">✓ Live on FB Page! (View ↗)</a>`;
+        toast('🎉 Successfully posted to your live Facebook Page!');
+      } catch (err) {
+        b.style.width = '100%';
+        s.innerHTML = `<span style="color:var(--err)">✗ FB API: ${esc(err.message)}</span>`;
+        toast('Facebook API Error: ' + err.message);
+      }
+      if (++done === jobs.length) finishPublish(pls, isSched);
+      return;
+    }
+
+    // If no real token is configured, show clear demo notice
+    if (j.p.id === 'fb' && (!accSecrets.fb || !accSecrets.fb.token)) {
+      toast('⚠️ Real Facebook Token not added. Currently in Demo Mode. To publish live to your FB Page, open Accounts -> Direct Sync and paste your Token.');
+    }
+
     let w = 0;
     const iv = setInterval(() => {
       w += 15 + Math.random() * 25;
       if (w >= 100) {
         w = 100;
         clearInterval(iv);
-        const s = $('#s' + i);
-        s.textContent = isSched ? '✓ Scheduled' : (j.p.man ? '✓ Ready to share' : '✓ Published');
-        s.style.color = 'var(--ok)';
+        s.textContent = isSched ? '✓ Scheduled' : (j.p.man ? '✓ Ready to share' : (j.p.id === 'fb' && (!accSecrets.fb || !accSecrets.fb.token)) ? '⚠️ Demo Post (No Token)' : '✓ Published');
+        s.style.color = (j.p.id === 'fb' && (!accSecrets.fb || !accSecrets.fb.token)) ? 'var(--warn)' : 'var(--ok)';
         if (++done === jobs.length) finishPublish(pls, isSched);
       }
-      $('#b' + i).style.width = w + '%';
+      b.style.width = w + '%';
     }, 200 + Math.random() * 150);
   });
 };
+
+async function publishDirectFB(pageId, token, caption, mediaList) {
+  if (mediaList.post.length === 1) {
+    const fd = new FormData();
+    fd.append('source', mediaList.post[0].file);
+    fd.append('message', caption || '');
+    fd.append('access_token', token);
+    const r = await fetch(`https://graph.facebook.com/v21.0/${pageId}/photos`, { method: 'POST', body: fd });
+    const j = await r.json();
+    if (j.error) throw new Error(j.error.message);
+    return j;
+  } else if (mediaList.post.length > 1) {
+    const ids = [];
+    for (const m of mediaList.post) {
+      const fd = new FormData();
+      fd.append('source', m.file);
+      fd.append('published', 'false');
+      fd.append('access_token', token);
+      const r = await fetch(`https://graph.facebook.com/v21.0/${pageId}/photos`, { method: 'POST', body: fd });
+      const j = await r.json();
+      if (j.error) throw new Error(j.error.message);
+      ids.push(j.id);
+    }
+    const b = new URLSearchParams();
+    b.append('message', caption || '');
+    b.append('access_token', token);
+    ids.forEach((x, idx) => b.append(`attached_media[${idx}]`, JSON.stringify({ media_fbid: x })));
+    const r = await fetch(`https://graph.facebook.com/v21.0/${pageId}/feed`, { method: 'POST', body: b });
+    const j = await r.json();
+    if (j.error) throw new Error(j.error.message);
+    return j;
+  } else if (mediaList.reel) {
+    const fd = new FormData();
+    fd.append('source', mediaList.reel.file);
+    fd.append('description', caption || '');
+    fd.append('access_token', token);
+    const r = await fetch(`https://graph.facebook.com/v21.0/${pageId}/videos`, { method: 'POST', body: fd });
+    const j = await r.json();
+    if (j.error) throw new Error(j.error.message);
+    return j;
+  } else {
+    // Text-only post to Facebook Page feed
+    const b = new URLSearchParams();
+    b.append('message', caption || '');
+    b.append('access_token', token);
+    const r = await fetch(`https://graph.facebook.com/v21.0/${pageId}/feed`, { method: 'POST', body: b });
+    const j = await r.json();
+    if (j.error) throw new Error(j.error.message);
+    return j;
+  }
+}
 
 function finishPublish(pls, isSched) {
   const items = [media.post.length && (media.post.length > 1 ? 'Carousel (' + media.post.length + ' photos)' : 'Photo Post'), media.reel && 'Reel Video'].filter(Boolean).join(' + ');
