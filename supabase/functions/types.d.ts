@@ -15,3 +15,4 @@ declare namespace Deno {
   export const env: Env;
   export function serve(handler: (req: Request) => Response | Promise<Response>): void;
 }
+
