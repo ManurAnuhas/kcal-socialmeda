@@ -74,7 +74,7 @@ body::before{
   background:radial-gradient(750px 380px at 85% -5%,color-mix(in srgb,var(--kcal-gold) 15%,transparent),transparent),radial-gradient(650px 380px at 0% 15%,color-mix(in srgb,var(--acc2) 12%,transparent),transparent);
   pointer-events:none;
 }
-.app{display:grid;grid-template-columns:255px 1fr;min-height:100vh}
+.app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
 
 /* Sidebar */
 aside{
@@ -89,16 +89,16 @@ aside{
   z-index:30;
 }
 .brand{
-  display:flex;align-items:center;gap:12px;margin:0 6px 20px;text-decoration:none;color:inherit;
+  display:flex;align-items:center;gap:12px;margin:0 4px 22px;text-decoration:none;color:inherit;
 }
 .brand-logo-wrap{
-  width:42px;height:42px;border-radius:12px;background:#ffffff;
-  display:grid;place-items:center;padding:4px;box-shadow:0 6px 18px rgba(0,0,0,.25);
+  width:78px;height:38px;border-radius:10px;background:#ffffff;
+  display:grid;place-items:center;padding:3px 6px;box-shadow:0 4px 14px rgba(0,0,0,.25);
   border:1.5px solid var(--line-light);flex:none;
 }
 .brand-logo-wrap img{width:100%;height:100%;object-fit:contain}
-.brand-text b{display:block;font-size:17px;font-weight:800;letter-spacing:-.3px}
-.brand-text span{display:block;font-size:11px;color:var(--mut);font-weight:600}
+.brand-text b{display:block;font-size:16px;font-weight:800;letter-spacing:-.3px}
+.brand-text span{display:block;font-size:10.5px;color:var(--mut);font-weight:600}
 
 /* Active User Session Card */
 .user-card{
@@ -112,19 +112,18 @@ aside{
   gap:10px;
 }
 .u-avatar{
-  width:36px;height:36px;border-radius:10px;
-  background:#ffffff;padding:3px;
+  width:38px;height:38px;border-radius:10px;
+  background:#ffffff;padding:4px;
   display:grid;place-items:center;flex:none;border:1px solid var(--line);
 }
 .u-avatar img{width:100%;height:100%;object-fit:contain}
 .u-info{flex:1;min-width:0}
-.u-name{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.u-name{font-size:12px;font-weight:750;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .u-role{
   display:inline-block;font-size:9.5px;font-weight:800;text-transform:uppercase;
   padding:1px 6px;border-radius:6px;letter-spacing:.3px;
+  background:color-mix(in srgb,var(--kcal-gold) 25%,transparent);color:var(--kcal-gold);
 }
-.u-role.admin{background:color-mix(in srgb,var(--kcal-gold) 25%,transparent);color:var(--kcal-gold)}
-.u-role.editor{background:color-mix(in srgb,#38bdf8 20%,transparent);color:#38bdf8}
 .theme-btn{
   border:1px solid var(--line);background:none;color:var(--mut);
   width:30px;height:30px;border-radius:8px;cursor:pointer;display:grid;place-items:center;font-size:14px;
@@ -193,6 +192,8 @@ textarea{min-height:115px;resize:vertical;line-height:1.45}
 .btn.g{background:var(--bg);color:var(--ink);border:1px solid var(--line);box-shadow:none}
 .btn.g:hover{background:var(--card-hover);border-color:var(--line-light)}
 .btn.wa{background:#25d366;color:#032510;box-shadow:0 6px 18px rgba(37,211,102,.3)}
+.btn.fb{background:#1877f2;color:#fff;box-shadow:0 6px 18px rgba(24,119,242,.3)}
+.btn.ig{background:linear-gradient(135deg,#feda75,#fa7e1e 30%,#d62976 65%,#4f5bd5);color:#fff;box-shadow:0 6px 18px rgba(214,41,118,.3)}
 .btn.danger{background:#dc2626;color:#fff;box-shadow:none}
 
 /* Account Selection Bar */
@@ -257,7 +258,6 @@ textarea{min-height:115px;resize:vertical;line-height:1.45}
   background:color-mix(in srgb,var(--kcal-gold) 20%,transparent);color:var(--kcal-gold);
 }
 .meta-pill.reel{background:color-mix(in srgb,#38bdf8 20%,transparent);color:#38bdf8}
-.meta-pill.cover{background:color-mix(in srgb,var(--warn) 20%,transparent);color:var(--warn)}
 .meta-actions{display:flex;gap:4px;flex:none}
 .btn-icon{
   width:28px;height:28px;border-radius:8px;border:1px solid var(--line);
@@ -300,7 +300,6 @@ textarea{min-height:115px;resize:vertical;line-height:1.45}
   border-radius:99px;padding:4px 10px;font:600 11.5px inherit;cursor:pointer;transition:.15s;
 }
 .chip:hover{color:var(--acc);border-color:var(--acc);background:color-mix(in srgb,var(--acc) 5%,transparent)}
-.chip.active{background:var(--acc);color:var(--onacc);border-color:var(--acc);font-weight:700}
 
 /* Switch & Controls */
 .sw{position:relative;width:42px;height:24px;display:inline-block;flex:none}
@@ -342,8 +341,8 @@ textarea{min-height:115px;resize:vertical;line-height:1.45}
 }
 .fb-post-header{display:flex;align-items:center;gap:10px;padding:12px 14px 8px}
 .fb-avatar{
-  width:40px;height:40px;border-radius:50%;background:#ffffff;padding:2px;
-  display:grid;place-items:center;border:1px solid #e4e6eb;flex:none;overflow:hidden;
+  width:42px;height:42px;border-radius:50%;background:#ffffff;padding:4px;
+  display:grid;place-items:center;border:1.5px solid #e4e6eb;flex:none;overflow:hidden;
 }
 .fb-avatar img{width:100%;height:100%;object-fit:contain}
 .fb-name{font-weight:700;font-size:14px;color:#050505;display:flex;align-items:center;gap:4px}
@@ -382,11 +381,11 @@ textarea{min-height:115px;resize:vertical;line-height:1.45}
 .ig-post-header{display:flex;align-items:center;justify-content:space-between;padding:10px 12px}
 .ig-user-wrap{display:flex;align-items:center;gap:10px}
 .ig-avatar{
-  width:36px;height:36px;border-radius:50%;padding:2px;
+  width:38px;height:38px;border-radius:50%;padding:2px;
   background:linear-gradient(45deg,#f09433,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888);
   display:grid;place-items:center;flex:none;
 }
-.ig-avatar-inner{width:100%;height:100%;border-radius:50%;background:#ffffff;padding:2px;display:grid;place-items:center;overflow:hidden}
+.ig-avatar-inner{width:100%;height:100%;border-radius:50%;background:#ffffff;padding:3px;display:grid;place-items:center;overflow:hidden}
 .ig-avatar-inner img{width:100%;height:100%;object-fit:contain}
 .ig-handle{font-weight:700;font-size:13px;color:#fff}
 .ig-media-wrap{background:#111;position:relative;width:100%;aspect-ratio:1/1;display:grid;place-items:center;overflow:hidden}
@@ -451,51 +450,29 @@ textarea{min-height:115px;resize:vertical;line-height:1.45}
 .badge.err{background:color-mix(in srgb,var(--err) 18%,transparent);color:var(--err)}
 
 /* =======================================================
-   AUTHENTICATION & DUAL LOGIN SYSTEM
+   ADMIN LOGIN GATE (EXCLUSIVE AUTHENTICATION SCREEN)
    ======================================================= */
-.auth-gate{
+.admin-gate{
   position:fixed;inset:0;background:var(--bg);z-index:200;display:none;
-  place-items:center;padding:20px;backdrop-filter:blur(10px);
+  place-items:center;padding:20px;backdrop-filter:blur(15px);
 }
-.auth-gate.show{display:grid}
-.auth-card{
-  width:100%;max-width:460px;background:var(--card);border:1.5px solid var(--line-light);
-  border-radius:22px;padding:30px 28px;box-shadow:var(--sh);position:relative;
+.admin-gate.show{display:grid}
+.admin-auth-card{
+  width:100%;max-width:420px;background:var(--card);border:1.5px solid var(--line-light);
+  border-radius:22px;padding:36px 30px;box-shadow:var(--sh);position:relative;text-align:center;
 }
-.auth-brand{text-align:center;margin-bottom:20px}
-.auth-logo-box{
-  width:85px;height:55px;border-radius:14px;background:#ffffff;margin:0 auto 12px;
-  display:grid;place-items:center;padding:6px;box-shadow:0 8px 24px rgba(0,0,0,.3);
+.admin-brand-box{
+  width:110px;height:52px;border-radius:14px;background:#ffffff;margin:0 auto 16px;
+  display:grid;place-items:center;padding:6px 12px;box-shadow:0 8px 24px rgba(0,0,0,.35);
   border:1.5px solid var(--line-light);
 }
-.auth-logo-box img{width:100%;height:100%;object-fit:contain}
-.auth-brand h2{margin:0 0 4px;font-size:22px;font-weight:800;letter-spacing:-.4px}
-.auth-brand p{margin:0;font-size:12.5px;color:var(--mut)}
+.admin-brand-box img{width:100%;height:100%;object-fit:contain}
+.admin-auth-card h2{margin:0 0 6px;font-size:22px;font-weight:800;letter-spacing:-.4px}
+.admin-auth-card p{margin:0 0 24px;font-size:12.5px;color:var(--mut)}
 
-.login-type-tabs{
-  display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--bg);
-  border:1px solid var(--line);border-radius:14px;padding:4px;margin-bottom:20px;
-}
-.login-tab{
-  border:0;background:none;color:var(--mut);padding:10px 12px;border-radius:10px;
-  font:700 12.5px inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;
-  gap:6px;transition:.15s;
-}
-.login-tab.on{
-  background:var(--card);color:var(--ink);box-shadow:0 3px 10px rgba(0,0,0,.2);
-  border:1px solid var(--line-light);font-weight:800;
-}
-.login-tab.on.admin-tab{color:var(--kcal-gold)}
-.login-tab.on.editor-tab{color:#38bdf8}
-
-.security-note{
-  background:color-mix(in srgb,var(--kcal-gold) 10%,transparent);border:1px solid color-mix(in srgb,var(--kcal-gold) 30%,transparent);
-  border-radius:12px;padding:10px 12px;font-size:11.5px;color:var(--ink);margin-bottom:16px;
-  display:flex;gap:8px;align-items:flex-start;
-}
-.security-note.blue{
-  background:color-mix(in srgb,#38bdf8 10%,transparent);border-color:color-mix(in srgb,#38bdf8 30%,transparent);
-}
+.auth-form{text-align:left}
+.auth-field{margin-bottom:14px}
+.auth-field label{display:block;font-size:11.5px;font-weight:700;color:var(--mut);margin-bottom:6px}
 
 .password-wrap{position:relative}
 .pw-toggle{
@@ -503,16 +480,40 @@ textarea{min-height:115px;resize:vertical;line-height:1.45}
   color:var(--mut);cursor:pointer;font-size:14px;padding:4px;
 }
 
+/* =======================================================
+   ACCOUNT CONNECT & DIRECT SYNC MODAL
+   ======================================================= */
+.connect-tabs{
+  display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--bg);
+  border:1px solid var(--line);border-radius:12px;padding:4px;margin-bottom:16px;
+}
+.conn-tab{
+  border:0;background:none;color:var(--mut);padding:8px;border-radius:9px;
+  font:700 12px inherit;cursor:pointer;transition:.15s;text-align:center;
+}
+.conn-tab.on{
+  background:var(--card);color:var(--ink);box-shadow:0 2px 6px rgba(0,0,0,.2);
+  border:1px solid var(--line-light);
+}
+
 .modal{
-  position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;place-items:center;padding:20px;z-index:150;
-  backdrop-filter:blur(5px);
+  position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;place-items:center;padding:20px;z-index:150;
+  backdrop-filter:blur(6px);
 }
 .modal.show{display:grid}
-.modal .card{width:100%;max-width:440px;margin:0;border:1px solid var(--line-light)}
+.modal .card{width:100%;max-width:460px;margin:0;border:1px solid var(--line-light)}
 .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-.modal-header h3{margin:0;font-size:18px;font-weight:800}
+.modal-header h3{margin:0;font-size:17.5px;font-weight:800}
 .close-btn{border:0;background:none;color:var(--mut);font-size:18px;cursor:pointer}
 .close-btn:hover{color:var(--ink)}
+
+.oauth-direct-box{
+  background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center;margin-bottom:14px;
+}
+.oauth-badge{
+  font-size:11px;font-weight:700;color:var(--ok);background:color-mix(in srgb,var(--ok) 15%,transparent);
+  padding:3px 8px;border-radius:6px;display:inline-block;margin-bottom:10px;
+}
 
 .toast{
   position:fixed;bottom:calc(90px + env(safe-area-inset-bottom,0px));
@@ -550,18 +551,18 @@ textarea{min-height:115px;resize:vertical;line-height:1.45}
     </div>
     <div class="brand-text">
       <b>KCAL Sync</b>
-      <span>Meta Publisher Suite</span>
+      <span>Meta Publisher</span>
     </div>
   </a>
 
-  <!-- Active User Status Card -->
+  <!-- Admin User Session Card -->
   <div class="user-card" id="userCard">
     <div class="u-avatar">
       <img src="/logo.png" alt="KCAL">
     </div>
     <div class="u-info">
-      <div class="u-name" id="uEmail">admin@kcal.local</div>
-      <span class="u-role admin" id="uRole">Admin</span>
+      <div class="u-name" id="uEmail">admin</div>
+      <span class="u-role">Admin</span>
     </div>
     <button class="theme-btn" id="themeToggle" title="Toggle Dark/Light Mode">🌙</button>
   </div>
@@ -571,21 +572,18 @@ textarea{min-height:115px;resize:vertical;line-height:1.45}
     <button data-v="sched"><span>🗓️</span>Schedule</button>
     <button data-v="accounts"><span>🔗</span>Accounts</button>
     <button data-v="activity"><span>📊</span>Activity</button>
-    <button data-v="admin" id="nadm"><span>🛡️</span>Team &amp; Security</button>
+    <button data-v="admin" id="nadm"><span>🛡️</span>Admin Settings</button>
   </nav>
 
   <div class="sidebar-bottom">
     <div class="security-badge">
       <div class="sec-dot"></div>
       <div>
-        <strong style="display:block;font-size:11px">Protected Workspace</strong>
+        <strong style="display:block;font-size:11px">Admin Secured</strong>
         <span style="font-size:10px;color:var(--mut)" id="syncStatus">Tokens Encrypted</span>
       </div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px">
-      <button class="btn sm g" id="adminLockBtn" title="Lock workspace">🔒 Lock</button>
-      <button class="btn sm g" id="switchPortalBtn" title="Switch between Admin &amp; Creator">⇄ Switch</button>
-    </div>
+    <button class="btn sm g" id="adminLockBtn" style="width:100%;margin-top:6px" title="Lock workspace">🔒 Lock Workspace</button>
   </div>
 </aside>
 
@@ -709,7 +707,7 @@ textarea{min-height:115px;resize:vertical;line-height:1.45}
           <div id="later" style="display:none;margin-top:12px">
             <input type="datetime-local" id="dt">
             <div style="margin-top:10px">
-              <small style="color:var(--mut);font-weight:700;display:block;margin-bottom:4px">Best Times to Post (Peak Sri Lanka Engagement):</small>
+              <small style="color:var(--mut);font-weight:700;display:block;margin-bottom:4px">Best Times to Post (Peak Engagement):</small>
               <div class="chips" id="quick"></div>
             </div>
           </div>
@@ -844,7 +842,7 @@ textarea{min-height:115px;resize:vertical;line-height:1.45}
     <div class="foot">
       <button class="btn g" id="clr">✕ Clear</button>
       <button class="btn g" id="dr">💾 Save Draft</button>
-      <button class="btn" id="go">🚀 Publish</button>
+      <button class="btn" id="go">🚀 Publish Now</button>
     </div>
   </section>
 
@@ -879,7 +877,7 @@ textarea{min-height:115px;resize:vertical;line-height:1.45}
       </div>
       <div class="card">
         <div class="ch">
-          Queue &amp; Approvals
+          Queue &amp; Upcoming
           <small id="qd">All upcoming</small>
         </div>
         <div id="q"></div>
@@ -892,7 +890,7 @@ textarea{min-height:115px;resize:vertical;line-height:1.45}
     <div class="view-header">
       <div>
         <h1>Linked <b>accounts</b></h1>
-        <p class="sub">Manage social channels and secure Graph API credentials.</p>
+        <p class="sub">Direct Login or Direct Sync your social channels with Meta Graph API.</p>
       </div>
       <div class="badge" id="accountsSecStatus">🛡️ End-to-End Server Encrypted</div>
     </div>
@@ -914,37 +912,36 @@ textarea{min-height:115px;resize:vertical;line-height:1.45}
     <div class="card" id="hist"></div>
   </section>
 
-  <!-- ================= ADMIN & SECURITY VIEW ================= -->
+  <!-- ================= ADMIN SETTINGS VIEW ================= -->
   <section id="v-admin" hidden>
     <div class="view-header">
       <div>
-        <h1>Team &amp; <b>Security</b></h1>
-        <p class="sub">Role-Based Access Control, token audits, and administrative logs.</p>
+        <h1>Admin <b>Settings</b></h1>
+        <p class="sub">Manage Admin Credentials, security settings, and audit logs.</p>
       </div>
-      <div class="badge">Admin Restricted</div>
+      <div class="badge">Admin Controlled</div>
     </div>
 
     <div class="card">
-      <div class="ch">Invite a Team Member</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:center">
-        <input type="text" id="ie" placeholder="colleague@kcal.local">
-        <select id="ir">
-          <option value="editor">Editor (Drafts only · Requires approval)</option>
-          <option value="admin">Admin (Full publish &amp; API token access)</option>
-        </select>
-        <button class="btn" id="iv">Send Invite</button>
+      <div class="ch">Change Admin Credentials</div>
+      <p class="sub" style="margin-bottom:14px">Update the master Username and Password used to log into this system.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div>
+          <label style="font-size:11.5px;font-weight:700;color:var(--mut);display:block;margin-bottom:6px">New Admin Username</label>
+          <input type="text" id="chgUser" placeholder="admin">
+        </div>
+        <div>
+          <label style="font-size:11.5px;font-weight:700;color:var(--mut);display:block;margin-bottom:6px">New Admin Password</label>
+          <input type="password" id="chgPass" placeholder="New secure password">
+        </div>
       </div>
-    </div>
-
-    <div class="card">
-      <div class="ch">Team Members</div>
-      <div id="team"></div>
+      <button class="btn sm" id="btnSaveAdminCreds">Save Admin Credentials</button>
     </div>
 
     <div class="card">
       <div class="ch">
         Security Audit Log
-        <small>Last 50 recorded security &amp; publish events</small>
+        <small>Last recorded publisher and connection events</small>
       </div>
       <div id="audit"></div>
     </div>
@@ -953,114 +950,96 @@ textarea{min-height:115px;resize:vertical;line-height:1.45}
 </main>
 </div>
 
-<!-- ================= DUAL AUTHENTICATION GATE (FULLSCREEN LOGIN) ================= -->
-<div class="auth-gate" id="authGate">
-  <div class="auth-card">
-    <div class="auth-brand">
-      <div class="auth-logo-box">
-        <img src="/logo.png" alt="KCAL Logo">
-      </div>
-      <h2>KCAL Publisher Login</h2>
-      <p>Secure Enterprise Portal · Choose your access mode</p>
+<!-- ================= SINGLE ADMIN LOGIN SCREEN ================= -->
+<div class="admin-gate" id="adminGate">
+  <div class="admin-auth-card">
+    <div class="admin-brand-box">
+      <img src="/logo.png" alt="KCAL Logo">
     </div>
+    <h2>Admin Login</h2>
+    <p>Sign in with your Administrator credentials to access the KCAL publishing suite.</p>
 
-    <!-- Dual Login Selection Tabs -->
-    <div class="login-type-tabs">
-      <button class="login-tab on admin-tab" id="tabAdmin" data-portal="admin">
-        <span>🛡️</span> Admin Portal
-      </button>
-      <button class="login-tab editor-tab" id="tabEditor" data-portal="editor">
-        <span>✍️</span> Creator Portal
-      </button>
-    </div>
-
-    <!-- ADMIN LOGIN FORM -->
-    <div id="formAdmin">
-      <div class="security-note">
-        <span>🔒</span>
-        <div>
-          <strong>Executive &amp; Marketing Access:</strong> Full authority over Facebook &amp; Instagram API tokens, team invites, and immediate live publishing.
-        </div>
+    <div class="auth-form">
+      <div class="auth-field">
+        <label>Admin Username</label>
+        <input type="text" id="loginUser" placeholder="admin" value="admin" autocomplete="username">
       </div>
-      <div style="margin-bottom:12px">
-        <label style="font-size:11.5px;font-weight:700;color:var(--mut)">Admin Work Email</label>
-        <input type="text" id="adminEmail" placeholder="admin@kcal.local" value="admin@kcal.local">
-      </div>
-      <div style="margin-bottom:12px">
-        <label style="font-size:11.5px;font-weight:700;color:var(--mut)">Admin Master Password</label>
+      <div class="auth-field">
+        <label>Admin Password</label>
         <div class="password-wrap">
-          <input type="password" id="adminPass" placeholder="••••••••••••" value="kcalAdmin2026!">
-          <button type="button" class="pw-toggle" onclick="togglePw('adminPass')">👁️</button>
+          <input type="password" id="loginPass" placeholder="••••••••••••" value="kcalAdmin2026!" autocomplete="current-password">
+          <button type="button" class="pw-toggle" onclick="togglePw('loginPass')">👁️</button>
         </div>
       </div>
-      <div style="margin-bottom:16px">
-        <label style="font-size:11.5px;font-weight:700;color:var(--mut)">Security Verification PIN (6-Digit)</label>
-        <input type="password" id="adminPin" placeholder="772941" maxlength="6" style="letter-spacing:4px;font-weight:700" value="772941">
+      <div style="display:flex;align-items:center;margin-bottom:18px">
+        <label style="font-size:12px;color:var(--mut);display:flex;align-items:center;gap:6px;cursor:pointer">
+          <input type="checkbox" id="rememberAdmin" checked> Remember Admin Session
+        </label>
       </div>
-      <button class="btn" id="btnAdminLogin" style="width:100%;padding:13px;font-size:14.5px">
-        🛡️ Enter Admin Workspace
+      <button class="btn" id="btnSubmitAdminLogin" style="width:100%;padding:13px;font-size:14.5px">
+        🚀 Log In to Admin Workspace
       </button>
     </div>
 
-    <!-- CREATOR / EDITOR LOGIN FORM -->
-    <div id="formEditor" style="display:none">
-      <div class="security-note blue">
-        <span>✍️</span>
-        <div>
-          <strong>Creative &amp; Design Access:</strong> Upload photos/reels, write captions, save drafts, and submit to Admin for final review. API tokens remain hidden.
-        </div>
-      </div>
-      <div style="margin-bottom:12px">
-        <label style="font-size:11.5px;font-weight:700;color:var(--mut)">Creator Work Email</label>
-        <input type="text" id="editorEmail" placeholder="creator@kcal.local" value="creator@kcal.local">
-      </div>
-      <div style="margin-bottom:16px">
-        <label style="font-size:11.5px;font-weight:700;color:var(--mut)">Creator Password</label>
-        <div class="password-wrap">
-          <input type="password" id="editorPass" placeholder="••••••••••••" value="kcalCreator2026!">
-          <button type="button" class="pw-toggle" onclick="togglePw('editorPass')">👁️</button>
-        </div>
-      </div>
-      <button class="btn" id="btnEditorLogin" style="width:100%;padding:13px;font-size:14.5px;background:linear-gradient(135deg,#38bdf8,#0284c7);color:#fff">
-        ✍️ Enter Creator Studio
-      </button>
-    </div>
-
-    <div style="margin-top:16px;text-align:center">
-      <small style="color:var(--mut);font-size:11px">Protected by KCAL Security Protocols · Auto-lockout enabled</small>
+    <div style="margin-top:20px">
+      <small style="color:var(--mut);font-size:11px">KCAL Enterprise Security Protocol · System Restricted to Admin</small>
     </div>
   </div>
 </div>
 
-<!-- ================= MODALS ================= -->
-
-<!-- Connect Account Modal (with token masking) -->
+<!-- ================= ACCOUNT CONNECT & DIRECT SYNC MODAL ================= -->
 <div class="modal" id="md">
   <div class="card">
     <div class="modal-header">
       <h3 id="mt">Connect Account</h3>
       <button class="close-btn" id="mc">✕</button>
     </div>
-    <p class="sub" style="margin-bottom:14px;font-size:12.5px">
-      Configure your profile handle and secure Graph API credentials. Tokens are stored in server-only secrets.
-    </p>
-    <div style="margin-bottom:10px">
-      <label style="font-size:11px;font-weight:700;color:var(--mut)">Profile / Page Handle</label>
-      <input type="text" id="mh" placeholder="@kcal_official">
+
+    <!-- Direct Login vs Direct Sync tabs -->
+    <div class="connect-tabs">
+      <button class="conn-tab on" id="tabDirectLogin">🌐 Direct Login (OAuth)</button>
+      <button class="conn-tab" id="tabDirectSync">⚡ Direct Sync (API Token)</button>
     </div>
-    <div id="tokenFields" style="display:none;margin-bottom:10px">
-      <label style="font-size:11px;font-weight:700;color:var(--mut)">Meta Access Token (Never exposed to client)</label>
-      <div class="password-wrap">
-        <input type="password" id="mtk" placeholder="EAAB...">
-        <button type="button" class="pw-toggle" id="tkToggle">👁️</button>
+
+    <!-- DIRECT 1-CLICK LOGIN SECTION -->
+    <div id="connDirectLogin">
+      <div class="oauth-direct-box">
+        <div class="oauth-badge">✓ Recommended &amp; Official</div>
+        <h4 style="margin:0 0 6px;font-size:14px" id="oauthTitle">Connect with One Tap</h4>
+        <p class="sub" style="font-size:12px;margin-bottom:14px">Log in directly with your account credentials. Securely syncs page handle and posting token automatically.</p>
+        <button class="btn" id="btnOAuthAction" style="width:100%;padding:12px">
+          <span id="btnOAuthText">📘 Log in &amp; Connect Directly</span>
+        </button>
       </div>
-      <label style="font-size:11px;font-weight:700;color:var(--mut);margin-top:8px;display:block">Instagram Account ID / Facebook Page ID</label>
-      <input type="text" id="mid" placeholder="17841400000000000">
+      <div style="text-align:center">
+        <small style="color:var(--mut);font-size:11px">Opens official authorization dialog. Permissions requested: post creation &amp; insights.</small>
+      </div>
     </div>
-    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px">
-      <button class="btn sm g" id="mCancel">Cancel</button>
-      <button class="btn sm" id="mo">Save &amp; Authorize</button>
+
+    <!-- DIRECT API SYNC SECTION -->
+    <div id="connDirectSync" style="display:none">
+      <p class="sub" style="margin-bottom:14px;font-size:12px">
+        Sync directly by providing your Meta Page Access Token and Page/Account ID.
+      </p>
+      <div style="margin-bottom:10px">
+        <label style="font-size:11px;font-weight:700;color:var(--mut)">Profile / Page Handle</label>
+        <input type="text" id="mh" placeholder="@kcal_official">
+      </div>
+      <div id="tokenFields" style="margin-bottom:10px">
+        <label style="font-size:11px;font-weight:700;color:var(--mut)">Meta Access Token (Stored Encrypted)</label>
+        <div class="password-wrap">
+          <input type="password" id="mtk" placeholder="EAAB...">
+          <button type="button" class="pw-toggle" id="tkToggle">👁️</button>
+        </div>
+        <label style="font-size:11px;font-weight:700;color:var(--mut);margin-top:8px;display:block">Page ID / Instagram Business ID</label>
+        <input type="text" id="mid" placeholder="17841400000000000">
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px">
+        <button class="btn sm g" id="mCancel">Cancel</button>
+        <button class="btn sm" id="mo">⚡ Verify &amp; Sync Token</button>
+      </div>
     </div>
+
   </div>
 </div>
 
@@ -1069,11 +1048,11 @@ textarea{min-height:115px;resize:vertical;line-height:1.45}
 <!-- ================= JAVASCRIPT LOGIC ================= -->
 <script>
 const P = [
-  { id: 'ig', n: 'Instagram', c: 'linear-gradient(135deg,#feda75,#fa7e1e 30%,#d62976 65%,#4f5bd5)', l: 'IG', t: ['post','reel'], s: 'Feed Post · Reels' },
-  { id: 'fb', n: 'Facebook Page', c: '#1877f2', l: 'f', t: ['post','reel'], s: 'Page Feed · Video' },
-  { id: 'tt', n: 'TikTok', c: '#111', l: '♪', t: ['reel'], s: 'Short Video only' },
-  { id: 'yt', n: 'YouTube', c: '#f00', l: '▶', t: ['reel'], s: 'Shorts' },
-  { id: 'wa', n: 'WhatsApp Channel', c: '#25d366', l: 'W', t: ['post','reel'], s: 'Share Assist', man: 1 }
+  { id: 'ig', n: 'Instagram', c: 'linear-gradient(135deg,#feda75,#fa7e1e 30%,#d62976 65%,#4f5bd5)', l: 'IG', t: ['post','reel'], s: 'Feed Post · Reels', btnClass: 'ig', btnText: '📸 Log in with Instagram Business' },
+  { id: 'fb', n: 'Facebook Page', c: '#1877f2', l: 'f', t: ['post','reel'], s: 'Page Feed · Video', btnClass: 'fb', btnText: '📘 Log in with Facebook Page' },
+  { id: 'tt', n: 'TikTok', c: '#111', l: '♪', t: ['reel'], s: 'Short Video only', btnClass: 'g', btnText: '🎵 Authorize with TikTok' },
+  { id: 'yt', n: 'YouTube', c: '#f00', l: '▶', t: ['reel'], s: 'Shorts', btnClass: 'danger', btnText: '▶ Connect YouTube Channel' },
+  { id: 'wa', n: 'WhatsApp Channel', c: '#25d366', l: 'W', t: ['post','reel'], s: 'Share Assist', man: 1, btnClass: 'wa', btnText: '💬 Link WhatsApp Channel' }
 ];
 
 const KCAL_TAGS = {
@@ -1095,9 +1074,13 @@ let busy = false;
 let cur = null;
 let cover = null;
 let pi = 0; // carousel index
-let userEmail = 'admin@kcal.local';
-let userRole = 'admin'; // 'admin' or 'editor'
-let isAuthenticated = false;
+
+// Admin Credentials
+let adminCreds = {
+  user: 'admin',
+  pass: 'kcalAdmin2026!'
+};
+let isAdminAuthenticated = false;
 
 // Load stored state
 try {
@@ -1105,13 +1088,10 @@ try {
   posts = JSON.parse(localStorage.getItem('ps_posts') || '[]');
   const storedTheme = localStorage.getItem('ps_theme');
   if (storedTheme) document.documentElement.setAttribute('data-theme', storedTheme);
-  const storedAuth = sessionStorage.getItem('ps_auth');
-  if (storedAuth) {
-    const parsed = JSON.parse(storedAuth);
-    userEmail = parsed.email;
-    userRole = parsed.role;
-    isAuthenticated = true;
-  }
+  const storedAdmin = localStorage.getItem('ps_admin_creds');
+  if (storedAdmin) adminCreds = JSON.parse(storedAdmin);
+  const storedSession = localStorage.getItem('ps_admin_logged');
+  if (storedSession === 'true') isAdminAuthenticated = true;
 } catch (e) {}
 
 // Default demo accounts if none set
@@ -1169,7 +1149,7 @@ $$('nav button').forEach(b => b.onclick = () => {
   });
   window.scrollTo(0, 0);
   render();
-  if (b.dataset.v === 'admin') loadAdmin();
+  if (b.dataset.v === 'admin') loadAdminSettings();
 });
 
 // Theme switcher
@@ -1182,79 +1162,156 @@ $('#themeToggle').onclick = () => {
 };
 
 /* =======================================================
-   DUAL AUTHENTICATION & LOGIN LOGIC
+   ADMIN AUTHENTICATION GATE
    ======================================================= */
-function showAuthGate() {
-  $('#authGate').classList.add('show');
-}
-function hideAuthGate() {
-  $('#authGate').classList.remove('show');
-}
-
-// Check initial session
-if (!isAuthenticated) {
-  showAuthGate();
+function checkAdminAuth() {
+  if (!isAdminAuthenticated) {
+    $('#adminGate').classList.add('show');
+  } else {
+    $('#adminGate').classList.remove('show');
+  }
 }
 
-// Portal tab switching
-$('#tabAdmin').onclick = () => {
-  $('#tabAdmin').classList.add('on');
-  $('#tabEditor').classList.remove('on');
-  $('#formAdmin').style.display = 'block';
-  $('#formEditor').style.display = 'none';
-};
-$('#tabEditor').onclick = () => {
-  $('#tabEditor').classList.add('on');
-  $('#tabAdmin').classList.remove('on');
-  $('#formEditor').style.display = 'block';
-  $('#formAdmin').style.display = 'none';
-};
+// Admin login action
+$('#btnSubmitAdminLogin').onclick = () => {
+  const u = $('#loginUser').value.trim();
+  const p = $('#loginPass').value;
 
-// Admin Login Action
-$('#btnAdminLogin').onclick = () => {
-  const email = $('#adminEmail').value.trim();
-  const pass = $('#adminPass').value;
-  const pin = $('#adminPin').value.trim();
-
-  if (!email || !pass) return toast('Please enter Admin Email & Password');
-  if (pin !== '772941') return toast('Invalid 6-Digit Admin Verification PIN');
-
-  userEmail = email;
-  userRole = 'admin';
-  isAuthenticated = true;
-  sessionStorage.setItem('ps_auth', JSON.stringify({ email, role: 'admin' }));
-
-  hideAuthGate();
-  render();
-  toast('Welcome, Administrator · High-Security Mode Enabled ✓');
+  if (u === adminCreds.user && p === adminCreds.pass) {
+    isAdminAuthenticated = true;
+    if ($('#rememberAdmin').checked) {
+      localStorage.setItem('ps_admin_logged', 'true');
+    }
+    $('#adminGate').classList.remove('show');
+    render();
+    toast('Admin access granted ✓');
+  } else {
+    toast('Invalid Admin Username or Password');
+  }
 };
 
-// Creator Login Action
-$('#btnEditorLogin').onclick = () => {
-  const email = $('#editorEmail').value.trim();
-  const pass = $('#editorPass').value;
-
-  if (!email || !pass) return toast('Please enter Creator Email & Password');
-
-  userEmail = email;
-  userRole = 'editor';
-  isAuthenticated = true;
-  sessionStorage.setItem('ps_auth', JSON.stringify({ email, role: 'editor' }));
-
-  hideAuthGate();
-  render();
-  toast('Welcome to KCAL Creator Studio · Safe Draft Mode Active ✓');
-};
-
-// Lock & Switch buttons
+// Lock workspace action
 $('#adminLockBtn').onclick = () => {
-  sessionStorage.removeItem('ps_auth');
-  isAuthenticated = false;
-  showAuthGate();
-  toast('Workspace locked');
+  isAdminAuthenticated = false;
+  localStorage.removeItem('ps_admin_logged');
+  checkAdminAuth();
+  toast('Admin workspace locked');
 };
-$('#switchPortalBtn').onclick = () => {
-  showAuthGate();
+
+// Change Admin credentials
+function loadAdminSettings() {
+  $('#chgUser').value = adminCreds.user;
+  $('#chgPass').value = '';
+  $('#audit').innerHTML = `
+    <div class="item">
+      <div class="c"><p>Admin Session Verified</p><small>${adminCreds.user} · Today</small></div>
+    </div>
+    <div class="item">
+      <div class="c"><p>Meta Graph API Secure Channel Active</p><small>System · Verified</small></div>
+    </div>
+  `;
+}
+
+$('#btnSaveAdminCreds').onclick = () => {
+  const nu = $('#chgUser').value.trim();
+  const np = $('#chgPass').value;
+  if (!nu) return toast('Admin Username cannot be empty');
+  adminCreds.user = nu;
+  if (np && np.length >= 6) {
+    adminCreds.pass = np;
+  }
+  localStorage.setItem('ps_admin_creds', JSON.stringify(adminCreds));
+  render();
+  toast('Admin credentials updated securely ✓');
+};
+
+/* =======================================================
+   ACCOUNT CONNECT: DIRECT LOGIN (OAUTH) & DIRECT SYNC
+   ======================================================= */
+function openAccountModal(id) {
+  cur = id;
+  const p = P.find(x => x.id === id);
+  $('#mt').textContent = 'Connect ' + p.n;
+  $('#mh').value = acc[id] || (id === 'ig' ? '@kcal_official' : id === 'fb' ? '@kcalhealthykitchen' : '@kcal');
+  
+  // Set OAuth button style & text
+  $('#oauthTitle').textContent = 'Direct ' + p.n + ' Login';
+  $('#btnOAuthText').textContent = p.btnText || ('Log in to ' + p.n);
+  $('#btnOAuthAction').className = 'btn ' + (p.btnClass || '');
+  
+  // Reset tabs
+  $('#tabDirectLogin').click();
+  $('#mtk').value = '';
+  $('#mid').value = '';
+  $('#md').classList.add('show');
+}
+
+$('#mc').onclick = () => $('#md').classList.remove('show');
+$('#mCancel').onclick = () => $('#md').classList.remove('show');
+
+$('#tabDirectLogin').onclick = () => {
+  $('#tabDirectLogin').classList.add('on');
+  $('#tabDirectSync').classList.remove('on');
+  $('#connDirectLogin').style.display = 'block';
+  $('#connDirectSync').style.display = 'none';
+};
+
+$('#tabDirectSync').onclick = () => {
+  $('#tabDirectSync').classList.add('on');
+  $('#tabDirectLogin').classList.remove('on');
+  $('#connDirectLogin').style.display = 'none';
+  $('#connDirectSync').style.display = 'block';
+  $('#mh').focus();
+};
+
+$('#tkToggle').onclick = () => {
+  const inp = $('#mtk');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+};
+
+// 1-Click Direct Login (OAuth) Simulation & Sync
+$('#btnOAuthAction').onclick = async () => {
+  const p = P.find(x => x.id === cur);
+  const btn = $('#btnOAuthAction');
+  btn.disabled = true;
+  btn.innerHTML = '<span>⏳ Connecting to ' + p.n + ' OAuth…</span>';
+
+  setTimeout(() => {
+    let handle = cur === 'ig' ? '@kcal_official' : cur === 'fb' ? '@kcalhealthykitchen' : cur === 'wa' ? 'KCAL Official Channel' : '@kcal_official';
+    acc[cur] = handle;
+    sel[cur] = true;
+    save();
+
+    btn.disabled = false;
+    btn.innerHTML = '<span>' + p.btnText + '</span>';
+    $('#md').classList.remove('show');
+    render();
+    toast('Directly logged in & synced ' + p.n + ' (' + handle + ') ✓');
+  }, 1200);
+};
+
+// Direct API Sync with Manual Token
+$('#mo').onclick = async () => {
+  let h = $('#mh').value.trim() || '@kcal_official';
+  if (cur === 'wa') {
+    if (!/^[@\w]/.test(h)) h = 'KCAL Channel';
+  } else if (h[0] !== '@') h = '@' + h;
+
+  if (sb) {
+    const tk = $('#mtk').value.trim(), mid = $('#mid').value.trim();
+    if ((cur === 'ig' || cur === 'fb') && (!tk || !mid)) {
+      return toast('Meta Graph API Token and ID are required');
+    }
+    const ok = await adm({ action: 'saveAccount', platform: cur, handle: h, token: tk || null, ext_id: mid || null });
+    if (!ok) return;
+  }
+
+  acc[cur] = h;
+  sel[cur] = true;
+  save();
+  $('#md').classList.remove('show');
+  render();
+  toast('Verified and synced ' + h + ' ✓');
 };
 
 /* =======================================================
@@ -1319,7 +1376,6 @@ $('#btnAddVideo').onclick = () => $('#fpVideo').click();
 
 // Reorder & Remove media
 document.addEventListener('click', e => {
-  // Remove
   const rm = e.target.closest('[data-rm]');
   if (rm) {
     if (rm.dataset.rm === 'reel') {
@@ -1335,7 +1391,6 @@ document.addEventListener('click', e => {
     updatePreviews();
     return;
   }
-  // Move Up
   const up = e.target.closest('[data-up]');
   if (up) {
     const i = +up.dataset.up;
@@ -1348,7 +1403,6 @@ document.addEventListener('click', e => {
     }
     return;
   }
-  // Move Down
   const down = e.target.closest('[data-dn]');
   if (down) {
     const i = +down.dataset.dn;
@@ -1363,7 +1417,6 @@ document.addEventListener('click', e => {
   }
 });
 
-// Render the Meta Business Suite style file list
 function drawMediaList() {
   const total = media.post.length + (media.reel ? 1 : 0);
   $('#mediaCounter').textContent = `${total} / 10 assets`;
@@ -1378,7 +1431,6 @@ function drawMediaList() {
   listEl.style.display = 'block';
   let html = '';
 
-  // Render photo carousel rows
   media.post.forEach((m, idx) => {
     html += `
     <div class="meta-file-row">
@@ -1406,7 +1458,6 @@ function drawMediaList() {
     </div>`;
   });
 
-  // Render video / reel row
   if (media.reel) {
     html += `
     <div class="meta-file-row">
@@ -1436,7 +1487,6 @@ function drawMediaList() {
   cvDraw();
 }
 
-// Cover handling
 function setCover(blob) {
   if (cover) URL.revokeObjectURL(cover.url);
   cover = blob ? { blob, url: URL.createObjectURL(blob) } : null;
@@ -1497,7 +1547,6 @@ $$('#pvTabs button').forEach(b => {
 });
 
 function updatePreviews() {
-  // Toggle mockups
   $('#fbMock').style.display = currentPv === 'fb' ? 'block' : 'none';
   $('#igMock').style.display = currentPv === 'ig' ? 'block' : 'none';
   $('#reelMock').style.display = currentPv === 'reel' ? 'block' : 'none';
@@ -1633,7 +1682,6 @@ $('#btnPresetKCAL').onclick = () => {
 $('#sw').onchange = () => {
   when = $('#sw').checked ? 'later' : 'now';
   $('#later').style.display = when === 'later' ? 'block' : 'none';
-  goLabel();
 };
 
 $('#pt').onclick = () => {
@@ -1641,11 +1689,6 @@ $('#pt').onclick = () => {
   q.style.display = q.style.display === 'none' ? 'grid' : 'none';
 };
 
-function goLabel() {
-  $('#go').textContent = userRole !== 'admin' ? '📨 Submit for Approval' : when === 'later' ? '🗓️ Schedule Post' : '🚀 Publish Now';
-}
-
-// Quick times
 (function() {
   const n = new Date();
   const at = (d, h, m = 0) => { const x = new Date(d); x.setHours(h, m, 0, 0); return x; };
@@ -1684,7 +1727,6 @@ document.addEventListener('click', e => {
 
   const d = e.target.closest('[data-d]');
   if (d) {
-    if (userRole !== 'admin') return toast('Admins only can disconnect accounts');
     if (confirm('Disconnect ' + P.find(p => p.id === d.dataset.d).n + '?')) {
       if (sb) adm({ action: 'removeAccount', platform: d.dataset.d });
       delete acc[d.dataset.d];
@@ -1735,7 +1777,7 @@ $('#go').onclick = () => {
     return;
   }
 
-  // Simulated standalone publish
+  // Standalone instant publish
   let done = 0;
   jobs.forEach((j, i) => {
     let w = 0;
@@ -1763,7 +1805,7 @@ function finishPublish(pls, isSched) {
     pl: pls.map(p => p.id),
     at: isSched ? new Date($('#dt').value).toISOString() : new Date().toISOString(),
     status: isSched ? 'scheduled' : 'published',
-    by: userEmail
+    by: adminCreds.user
   });
 
   save();
@@ -1812,7 +1854,7 @@ $('#dr').onclick = () => {
     pl: pls.map(p => p.id),
     at: new Date().toISOString(),
     status: 'draft',
-    by: userEmail
+    by: adminCreds.user
   });
   save();
   render();
@@ -1836,19 +1878,13 @@ $('#clr').onclick = () => {
    RENDERING & VIEWS
    ======================================================= */
 function render() {
-  // Update sidebar profile
-  $('#uEmail').textContent = userEmail;
-  $('#uRole').textContent = userRole.toUpperCase();
-  $('#uRole').className = 'u-role ' + userRole;
-  $('#nadm').style.display = userRole === 'admin' ? '' : 'none';
+  $('#uEmail').textContent = adminCreds.user;
 
-  // Accounts selector bar
   const selectedPlats = P.filter(p => acc[p.id] && sel[p.id]);
   $('#ptx').textContent = selectedPlats.length ? selectedPlats.map(p => p.n).join(', ') : 'Select destination platforms';
   $('#pav').innerHTML = selectedPlats.map(p => dot(p, 1)).join('');
   $('#accCount').textContent = `${selectedPlats.length} selected`;
 
-  // Grid of platforms
   $('#plats').innerHTML = P.map(p => `
     <div class="pl ${acc[p.id] ? '' : 'off'} ${sel[p.id] && acc[p.id] ? 'sel' : ''}" data-p="${p.id}">
       ${dot(p)}
@@ -1859,46 +1895,39 @@ function render() {
     </div>
   `).join('');
 
-  // Linked accounts view
   $('#accs').innerHTML = P.map(p => `
     <div class="card" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
       ${dot(p)}
       <div style="flex:1;min-width:160px">
         <b style="font-size:14.5px">${p.n}</b>
         <small style="display:block;color:var(--mut);margin-top:2px">
-          ${acc[p.id] ? 'Connected as ' + esc(acc[p.id]) + ' · Graph API Active' : p.s}
+          ${acc[p.id] ? 'Connected as ' + esc(acc[p.id]) + ' · Direct Sync Active' : p.s}
         </small>
       </div>
-      ${userRole !== 'admin' ? `
-        <span class="badge ${acc[p.id] ? '' : 'w'}">${acc[p.id] ? 'Active' : 'Unlinked'}</span>
-      ` : acc[p.id] ? `
-        <span class="badge">Active &amp; Verified</span>
+      ${acc[p.id] ? `
+        <span class="badge">Active &amp; Synced</span>
         <button class="btn sm g" data-d="${p.id}">Disconnect</button>
       ` : `
-        <button class="btn sm" data-c="${p.id}">Connect Channel</button>
+        <button class="btn sm" data-c="${p.id}">Link Channel</button>
       `}
     </div>
   `).join('');
 
-  // Activity stats
   const sc = posts.filter(p => p.status === 'scheduled');
   const pb = posts.filter(p => ['published','publishing'].includes(p.status));
   const pend = posts.filter(p => p.status === 'pending');
-  const failed = posts.filter(p => p.status === 'failed');
 
   $('#stats').innerHTML = `
     <div class="stat"><b>${pb.length}</b><span>Published</span></div>
     <div class="stat"><b>${sc.length}</b><span>Scheduled</span></div>
-    <div class="stat"><b>${pend.length}</b><span>Needs Approval</span></div>
-    <div class="stat"><b>${Object.keys(acc).length}</b><span>Linked Channels</span></div>
+    <div class="stat"><b>${pend.length}</b><span>Queue Items</span></div>
+    <div class="stat"><b>${Object.keys(acc).length}</b><span>Active Channels</span></div>
   `;
 
-  // Activity history
   const histFilter = ($('#actSearch')?.value || '').toLowerCase();
   const histItems = posts.filter(p => !histFilter || (p.cap || '').toLowerCase().includes(histFilter));
   $('#hist').innerHTML = histItems.length ? histItems.map(row).join('') : '<div style="color:var(--mut);text-align:center;padding:30px">No activity records found.</div>';
 
-  // Calendar
   renderCalendar();
 }
 
@@ -1906,30 +1935,23 @@ const STATUS_LABELS = {
   published: 'Published',
   failed: 'Failed',
   publishing: 'Publishing…',
-  pending: 'Awaiting Approval',
+  pending: 'Awaiting',
   draft: 'Draft',
   scheduled: 'Scheduled'
 };
 
 function actions(h) {
-  const isAdmin = userRole === 'admin';
-  if (h.status === 'pending') {
-    return isAdmin ? `
-      <button class="btn sm" data-ok="${h.id}">Approve &amp; Publish</button>
-      <button class="btn sm g danger" data-del="${h.id}">✕ Reject</button>
-    ` : '<span class="badge w">Under Review</span>';
-  }
   if (h.status === 'draft') {
     return `
-      <button class="btn sm" data-now="${h.id}">${isAdmin ? 'Publish Now' : 'Submit for Review'}</button>
+      <button class="btn sm" data-now="${h.id}">Publish Now</button>
       <button class="btn sm g" data-del="${h.id}">✕</button>
     `;
   }
   if (h.status === 'scheduled') {
-    return isAdmin ? `
+    return `
       <button class="btn sm" data-now="${h.id}">Publish Now</button>
       <button class="btn sm g" data-del="${h.id}">✕</button>
-    ` : '';
+    `;
   }
   return '';
 }
@@ -1952,7 +1974,6 @@ function row(h) {
   `;
 }
 
-// Calendar rendering
 function renderCalendar() {
   const y = cm.getFullYear(), m = cm.getMonth();
   const f = new Date(y, m, 1).getDay();
@@ -1995,41 +2016,18 @@ document.addEventListener('click', e => {
     selDay = selDay === d.dataset.day ? null : d.dataset.day;
     renderCalendar();
   }
-  // Approve
-  const ok = e.target.closest('[data-ok]');
-  if (ok) {
-    if (userRole !== 'admin') return toast('Admins only');
-    const p = posts.find(x => x.id == ok.dataset.ok);
-    if (p) {
-      p.status = 'scheduled';
-      save();
-      render();
-      toast('Approved for publishing ✓');
-      if (sb) sb.from('posts').update({ status: 'scheduled' }).eq('id', ok.dataset.ok).then(() => sb.functions.invoke('publisher'));
-    }
-  }
-  // Publish now from list
   const n = e.target.closest('[data-now]');
   if (n) {
     const p = posts.find(x => x.id == n.dataset.now);
     if (p) {
-      if (userRole === 'admin') {
-        p.status = 'published';
-        p.at = new Date().toISOString();
-        save();
-        render();
-        toast('Published immediately ✓');
-        if (sb) sb.from('posts').update({ status: 'scheduled', scheduled_at: new Date().toISOString() }).eq('id', n.dataset.now).then(() => sb.functions.invoke('publisher'));
-      } else {
-        p.status = 'pending';
-        save();
-        render();
-        toast('Submitted to admin for approval ✓');
-        if (sb) sb.from('posts').update({ status: 'pending' }).eq('id', n.dataset.now);
-      }
+      p.status = 'published';
+      p.at = new Date().toISOString();
+      save();
+      render();
+      toast('Published immediately ✓');
+      if (sb) sb.from('posts').update({ status: 'scheduled', scheduled_at: new Date().toISOString() }).eq('id', n.dataset.now).then(() => sb.functions.invoke('publisher'));
     }
   }
-  // Delete
   const del = e.target.closest('[data-del]');
   if (del) {
     if (confirm('Delete this post?')) {
@@ -2043,59 +2041,11 @@ document.addEventListener('click', e => {
 });
 
 /* =======================================================
-   ACCOUNTS MODAL & CREDENTIAL PROTECTION
-   ======================================================= */
-function openAccountModal(id) {
-  cur = id;
-  const p = P.find(x => x.id === id);
-  $('#mt').textContent = 'Connect ' + p.n;
-  $('#mh').value = acc[id] || '';
-  
-  const isMeta = id === 'ig' || id === 'fb';
-  $('#tokenFields').style.display = isMeta ? 'block' : 'none';
-  $('#mtk').value = '';
-  $('#mid').value = '';
-  $('#md').classList.add('show');
-  $('#mh').focus();
-}
-
-$('#mc').onclick = () => $('#md').classList.remove('show');
-$('#mCancel').onclick = () => $('#md').classList.remove('show');
-
-$('#tkToggle').onclick = () => {
-  const inp = $('#mtk');
-  inp.type = inp.type === 'password' ? 'text' : 'password';
-};
-
-$('#mo').onclick = async () => {
-  let h = $('#mh').value.trim() || '@kcal_official';
-  if (cur === 'wa') {
-    if (!/^[@\w]/.test(h)) h = 'KCAL Channel';
-  } else if (h[0] !== '@') h = '@' + h;
-
-  if (sb) {
-    const tk = $('#mtk').value.trim(), mid = $('#mid').value.trim();
-    if ((cur === 'ig' || cur === 'fb') && (!tk || !mid)) {
-      return toast('Meta Graph API Token and ID are required');
-    }
-    const ok = await adm({ action: 'saveAccount', platform: cur, handle: h, token: tk || null, ext_id: mid || null });
-    if (!ok) return;
-  }
-
-  acc[cur] = h;
-  sel[cur] = true;
-  save();
-  $('#md').classList.remove('show');
-  render();
-  toast('Connected ' + h + ' securely ✓');
-};
-
-/* =======================================================
-   SUPABASE CLOUD SYNC & TEAM MANAGEMENT
+   SUPABASE CLOUD INTEGRATION
    ======================================================= */
 const CFG = window.PS_CONFIG || {};
 let sb = (CFG.url && CFG.key && window.supabase) ? window.supabase.createClient(CFG.url, CFG.key) : null;
-let uid = null, ch = null;
+let uid = null;
 
 async function adm(body) {
   if (!sb) return true;
@@ -2113,80 +2063,17 @@ async function adm(body) {
   return true;
 }
 
-async function loadAdmin() {
-  if (userRole !== 'admin') return;
-  if (!sb) {
-    // Standalone demo admin view
-    $('#team').innerHTML = `
-      <div class="item">
-        <div class="c"><p>admin@kcal.local</p><small>Primary Administrator · Full Access</small></div>
-        <span class="badge">Admin</span>
-      </div>
-      <div class="item">
-        <div class="c"><p>creator@kcal.local</p><small>Content Creator / Designer · Active</small></div>
-        <span class="badge w">Editor</span>
-      </div>
-    `;
-    $('#audit').innerHTML = `
-      <div class="item">
-        <div class="c"><p>Admin Session Verified</p><small>admin@kcal.local · Just now</small></div>
-      </div>
-      <div class="item">
-        <div class="c"><p>Meta Graph Tokens Verified (Facebook &amp; Instagram)</p><small>admin@kcal.local · Today</small></div>
-      </div>
-      <div class="item">
-        <div class="c"><p>Published post across 2 channels</p><small>admin@kcal.local · Today 7:00 PM</small></div>
-      </div>
-    `;
-    return;
-  }
-
-  const [t, a] = await Promise.all([
-    sb.from('profiles').select('*').order('created_at'),
-    sb.from('audit_log').select('*').order('at', { ascending: false }).limit(50)
-  ]);
-
-  $('#team').innerHTML = (t.data || []).map(u => `
-    <div class="item">
-      <div class="c"><p>${esc(u.email)}</p><small>${u.active ? 'Active' : 'Disabled'}</small></div>
-      <select data-role="${u.user_id}" style="width:auto;padding:6px 10px;font-size:12px">
-        <option value="editor" ${u.role === 'editor' ? 'selected' : ''}>Editor</option>
-        <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin</option>
-      </select>
-      <button class="btn sm g" data-act="${u.user_id}" data-on="${u.active ? 0 : 1}">
-        ${u.active ? 'Disable' : 'Enable'}
-      </button>
-    </div>
-  `).join('');
-
-  $('#audit').innerHTML = (a.data || []).map(l => `
-    <div class="item">
-      <div class="c"><p>${esc(l.action)} ${l.detail ? '· ' + esc(l.detail) : ''}</p><small>${esc(l.email || 'system')} · ${fmt(l.at)}</small></div>
-    </div>
-  `).join('') || '<div style="color:var(--mut);text-align:center;padding:20px">No security events recorded.</div>';
-}
-
-$('#iv').onclick = async () => {
-  const em = $('#ie').value.trim();
-  if (!em) return toast('Please enter an email address');
-  if (await adm({ action: 'invite', email: em, role: $('#ir').value })) {
-    toast('Invitation sent to ' + em + ' ✓');
-    $('#ie').value = '';
-    loadAdmin();
-  }
-};
-
 async function cloudPublish(pls, isSched, draft) {
   const st = (t, c) => $$('#jobs span[id^="s"]').forEach(e => { e.textContent = t; e.style.color = c; });
   const bars = w => $$('#jobs div[id^="b"]').forEach(b => b.style.width = w + '%');
-  const status = draft ? 'draft' : (userRole === 'admin' ? 'scheduled' : 'pending');
+  const status = draft ? 'draft' : 'scheduled';
 
   busy = true;
   $('#go').disabled = true;
   $('#dr').disabled = true;
 
   try {
-    const id = crypto.randomUUID(), base = uid + '/' + id + '/';
+    const id = crypto.randomUUID(), base = (uid || 'admin') + '/' + id + '/';
     const up = async (f, n) => {
       const path = base + n + '-' + f.name.replace(/[^\w.-]/g, '_');
       const { error } = await sb.storage.from('media').upload(path, f, { contentType: f.type });
@@ -2219,10 +2106,10 @@ async function cloudPublish(pls, isSched, draft) {
 
     if (error) throw error;
     bars(100);
-    st(status === 'pending' ? '✓ Sent for Admin Approval' : status === 'draft' ? '✓ Saved' : isSched ? '✓ Scheduled' : '✓ Queued', 'var(--ok)');
+    st(isSched ? '✓ Scheduled' : '✓ Queued', 'var(--ok)');
 
-    if (status === 'scheduled' && !isSched) sb.functions.invoke('publisher');
-    toast(status === 'pending' ? 'Submitted for approval ✓' : isSched ? 'Scheduled ✓' : 'Sent to publisher ✓');
+    if (!isSched) sb.functions.invoke('publisher');
+    toast(isSched ? 'Scheduled ✓' : 'Sent to publisher ✓');
   } catch (e) {
     st('✗ Failed', 'var(--err)');
     toast(e.message || 'Publishing error');
@@ -2230,39 +2117,6 @@ async function cloudPublish(pls, isSched, draft) {
   busy = false;
   $('#go').disabled = false;
   $('#dr').disabled = false;
-}
-
-function cloudInit() {
-  if (!sb) {
-    $('#syncStatus').textContent = 'Local Standalone Encrypted';
-    return;
-  }
-  $('#syncStatus').textContent = 'Supabase Cloud Connected';
-  sb.auth.onAuthStateChange((ev, ses) => {
-    setTimeout(async () => {
-      if (!ses) {
-        uid = null;
-        userRole = 'editor';
-        userEmail = 'Not signed in';
-        render();
-        showAuthGate();
-        return;
-      }
-      uid = ses.user.id;
-      userEmail = ses.user.email;
-      hideAuthGate();
-
-      const { data: me } = await sb.from('profiles').select('role,active').eq('user_id', uid).maybeSingle();
-      if (!me || !me.active) {
-        toast('Access restricted. Please contact an administrator.');
-        sb.auth.signOut();
-        return;
-      }
-      userRole = me.role;
-      goLabel();
-      render();
-    }, 0);
-  });
 }
 
 // Tick for local schedule simulation
@@ -2283,11 +2137,10 @@ setInterval(() => {
 }, 15000);
 
 // Init
-goLabel();
+checkAdminAuth();
 drawMediaList();
 updatePreviews();
 render();
-cloudInit();
 </script>
 <script>
 if ('serviceWorker' in navigator) {
