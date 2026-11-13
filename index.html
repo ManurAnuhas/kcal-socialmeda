@@ -1202,8 +1202,13 @@ function checkAdminAuth() {
   }
 }
 
-// Admin login action
+// Admin login action - also support Enter key
+$('#loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') $('#btnSubmitAdminLogin').click(); });
+$('#loginUser').addEventListener('keydown', e => { if (e.key === 'Enter') $('#btnSubmitAdminLogin').click(); });
+
 $('#btnSubmitAdminLogin').onclick = () => {
+  const loginBtn = $('#btnSubmitAdminLogin');
+  if (loginBtn.disabled) return;
   const u = $('#loginUser').value.trim();
   const p = $('#loginPass').value;
 
@@ -1243,6 +1248,8 @@ function loadAdminSettings() {
 }
 
 $('#btnSaveAdminCreds').onclick = () => {
+  const saveBtn = $('#btnSaveAdminCreds');
+  if (saveBtn.disabled) return;
   const nu = $('#chgUser').value.trim();
   const np = $('#chgPass').value;
   if (!nu) return toast('Admin Username cannot be empty');
@@ -1269,17 +1276,36 @@ function openAccountModal(id) {
   $('#btnOAuthText').textContent = p.btnText || ('Log in to ' + p.n);
   $('#btnOAuthAction').className = 'btn ' + (p.btnClass || '');
   
+  // Re-enable OAuth button (may have been disabled from previous open)
+  $('#btnOAuthAction').disabled = false;
+  
+  // Hide page selector (may still be visible from previous open)
+  $('#oauthPageSelector').style.display = 'none';
+  
   // Prefill existing secrets if saved
   $('#mtk').value = (accSecrets[id] && accSecrets[id].token) || '';
   $('#mid').value = (accSecrets[id] && accSecrets[id].ext_id) || '';
 
-  // Reset tabs
-  $('#tabDirectLogin').click();
+  // Reset tabs directly (avoid .click() re-entrancy issues)
+  $('#tabDirectLogin').classList.add('on');
+  $('#tabDirectSync').classList.remove('on');
+  $('#connDirectLogin').style.display = 'block';
+  $('#connDirectSync').style.display = 'none';
+  
   $('#md').classList.add('show');
 }
 
-$('#mc').onclick = () => $('#md').classList.remove('show');
-$('#mCancel').onclick = () => $('#md').classList.remove('show');
+function closeAccountModal() {
+  $('#md').classList.remove('show');
+  $('#oauthPageSelector').style.display = 'none';
+  $('#btnOAuthAction').disabled = false;
+  const p = cur ? P.find(x => x.id === cur) : null;
+  if (p) {
+    $('#btnOAuthAction').innerHTML = '<span>' + (p.btnText || 'Log in') + '</span>';
+  }
+}
+$('#mc').onclick = closeAccountModal;
+$('#mCancel').onclick = closeAccountModal;
 
 $('#tabDirectLogin').onclick = () => {
   $('#tabDirectLogin').classList.add('on');
@@ -1305,12 +1331,13 @@ $('#tkToggle').onclick = () => {
 $('#btnOAuthAction').onclick = async () => {
   const p = P.find(x => x.id === cur);
   const btn = $('#btnOAuthAction');
+  if (btn.disabled) return; // Prevent double-click
   btn.disabled = true;
   btn.innerHTML = '<span>⏳ Connecting to ' + p.n + ' OAuth…</span>';
 
   setTimeout(() => {
     btn.disabled = false;
-    btn.innerHTML = '<span>' + p.btnText + '</span>';
+    btn.innerHTML = '<span>' + (p.btnText || 'Log in to ' + p.n) + '</span>';
     
     // Display detected page selector so user sees exact account being connected
     const pName = cur === 'fb' ? 'KCAL · Healthy Food & Kitchen' : cur === 'ig' ? 'KCAL Official (Instagram Business)' : cur === 'wa' ? 'KCAL Official Channel' : 'KCAL Official ' + p.n;
@@ -1324,12 +1351,14 @@ $('#btnOAuthAction').onclick = async () => {
 
 $('#btnConfirmOAuthPage').onclick = () => {
   const p = P.find(x => x.id === cur);
+  if (!cur) return;
   let handle = cur === 'ig' ? '@kcal_official' : cur === 'fb' ? '@kcalhealthykitchen' : cur === 'wa' ? 'KCAL Official Channel' : '@kcal_official';
   acc[cur] = handle;
   sel[cur] = true;
   save();
 
   $('#oauthPageSelector').style.display = 'none';
+  $('#btnOAuthAction').disabled = false;
   $('#md').classList.remove('show');
   render();
   toast('Verified and connected to ' + $('#detPageName').textContent + ' ✓');
@@ -1376,6 +1405,9 @@ $('#btnTestDone').onclick = () => $('#testModal').classList.remove('show');
 
 // Direct API Sync with Manual Token
 $('#mo').onclick = async () => {
+  const moBtn = $('#mo');
+  if (moBtn.disabled) return; // Prevent double-click
+  
   let h = $('#mh').value.trim() || '@kcal_official';
   if (cur === 'wa') {
     if (!/^[@\w]/.test(h)) h = 'KCAL Channel';
@@ -1383,6 +1415,9 @@ $('#mo').onclick = async () => {
 
   const tk = $('#mtk').value.trim();
   const mid = $('#mid').value.trim();
+
+  moBtn.disabled = true;
+  moBtn.textContent = '⏳ Verifying…';
 
   if (tk || mid) {
     accSecrets[cur] = { token: tk, ext_id: mid };
@@ -1400,6 +1435,8 @@ $('#mo').onclick = async () => {
   acc[cur] = h;
   sel[cur] = true;
   save();
+  moBtn.disabled = false;
+  moBtn.textContent = '⚡ Verify & Sync Token';
   $('#md').classList.remove('show');
   render();
   toast(tk ? 'Live API Token & Page ID saved for ' + h + ' ✓' : 'Verified and synced ' + h + ' ✓');
@@ -1816,12 +1853,14 @@ document.addEventListener('click', e => {
   const c = e.target.closest('[data-c]');
   if (c) openAccountModal(c.dataset.c);
 
-  const d = e.target.closest('[data-d]');
-  if (d) {
-    if (confirm('Disconnect ' + P.find(p => p.id === d.dataset.d).n + '?')) {
-      if (sb) adm({ action: 'removeAccount', platform: d.dataset.d });
-      delete acc[d.dataset.d];
-      delete sel[d.dataset.d];
+  const disc = e.target.closest('[data-disc]');
+  if (disc) {
+    if (confirm('Disconnect ' + P.find(p => p.id === disc.dataset.disc).n + '?')) {
+      if (sb) adm({ action: 'removeAccount', platform: disc.dataset.disc });
+      delete acc[disc.dataset.disc];
+      delete sel[disc.dataset.disc];
+      delete accSecrets[disc.dataset.disc];
+      try { localStorage.setItem('ps_secrets', JSON.stringify(accSecrets)); } catch(e){}
       save();
       render();
       toast('Disconnected account');
@@ -1870,7 +1909,13 @@ $('#go').onclick = () => {
 
   // Standalone publish (with Direct Meta Graph API publishing if token configured)
   let done = 0;
-  jobs.forEach(async (j, i) => {
+  const totalJobs = jobs.length;
+
+  function checkAllDone() {
+    if (++done === totalJobs) finishPublish(pls, isSched);
+  }
+
+  jobs.forEach((j, i) => {
     const s = $('#s' + i);
     const b = $('#b' + i);
 
@@ -1879,23 +1924,25 @@ $('#go').onclick = () => {
       s.textContent = 'Sending to Meta Graph API…';
       s.style.color = 'var(--acc)';
       b.style.width = '60%';
-      try {
-        const res = await publishDirectFB(accSecrets.fb.ext_id, accSecrets.fb.token, $('#cap').value, media);
-        b.style.width = '100%';
-        s.innerHTML = `<a href="https://facebook.com/${res.id || accSecrets.fb.ext_id}" target="_blank" style="color:var(--ok);font-weight:700">✓ Live on FB Page! (View ↗)</a>`;
-        toast('🎉 Successfully posted to your live Facebook Page!');
-      } catch (err) {
-        b.style.width = '100%';
-        s.innerHTML = `<span style="color:var(--err)">✗ FB API: ${esc(err.message)}</span>`;
-        toast('Facebook API Error: ' + err.message);
-      }
-      if (++done === jobs.length) finishPublish(pls, isSched);
+      publishDirectFB(accSecrets.fb.ext_id, accSecrets.fb.token, $('#cap').value, media)
+        .then(res => {
+          b.style.width = '100%';
+          s.innerHTML = `<a href="https://facebook.com/${res.id || accSecrets.fb.ext_id}" target="_blank" style="color:var(--ok);font-weight:700">✓ Live on FB Page! (View ↗)</a>`;
+          toast('🎉 Successfully posted to your live Facebook Page!');
+          checkAllDone();
+        })
+        .catch(err => {
+          b.style.width = '100%';
+          s.innerHTML = `<span style="color:var(--err)">✗ FB API: ${esc(err.message)}</span>`;
+          toast('Facebook API Error: ' + err.message);
+          checkAllDone();
+        });
       return;
     }
 
-    // If no real token is configured, show clear demo notice
-    if (j.p.id === 'fb' && (!accSecrets.fb || !accSecrets.fb.token)) {
-      toast('⚠️ Real Facebook Token not added. Currently in Demo Mode. To publish live to your FB Page, open Accounts -> Direct Sync and paste your Token.');
+    // If no real token is configured, show clear demo notice (once)
+    if (j.p.id === 'fb' && (!accSecrets.fb || !accSecrets.fb.token) && i === jobs.findIndex(x => x.p.id === 'fb')) {
+      toast('⚠️ Demo Mode — paste your Token in Accounts → Direct Sync to publish live.');
     }
 
     let w = 0;
@@ -1906,7 +1953,7 @@ $('#go').onclick = () => {
         clearInterval(iv);
         s.textContent = isSched ? '✓ Scheduled' : (j.p.man ? '✓ Ready to share' : (j.p.id === 'fb' && (!accSecrets.fb || !accSecrets.fb.token)) ? '⚠️ Demo Post (No Token)' : '✓ Published');
         s.style.color = (j.p.id === 'fb' && (!accSecrets.fb || !accSecrets.fb.token)) ? 'var(--warn)' : 'var(--ok)';
-        if (++done === jobs.length) finishPublish(pls, isSched);
+        checkAllDone();
       }
       b.style.width = w + '%';
     }, 200 + Math.random() * 150);
@@ -1977,8 +2024,10 @@ function finishPublish(pls, isSched) {
   });
 
   save();
+  // Always reset busy state and re-enable all action buttons
   busy = false;
   $('#go').disabled = false;
+  $('#dr').disabled = false;
   toast(isSched ? 'Post scheduled successfully ✓' : 'Published across ' + pls.length + ' channels ✓');
 
   if (pls.some(p => p.man)) {
@@ -2009,6 +2058,7 @@ document.addEventListener('click', async e => {
 
 // Drafts
 $('#dr').onclick = () => {
+  if (busy) return;
   if (!media.post.length && !media.reel && !$('#cap').value.trim()) return toast('Nothing to save in draft');
   const pls = P.filter(p => acc[p.id] && sel[p.id]);
   if (sb) {
@@ -2033,10 +2083,15 @@ $('#clr').onclick = () => {
   media.post.forEach(m => URL.revokeObjectURL(m.url));
   if (media.reel) URL.revokeObjectURL(media.reel.url);
   media = { post: [], reel: null };
+  pi = 0;
   setCover(null);
   $('#cap').value = '';
   $('#charCount').textContent = '0 / 2,200 (IG)';
   $('#jobsc').style.display = 'none';
+  // Reset publish state in case it was stuck
+  busy = false;
+  $('#go').disabled = false;
+  $('#dr').disabled = false;
   drawMediaList();
   updatePreviews();
   toast('Cleared editor');
@@ -2082,7 +2137,7 @@ function render() {
       </div>
       ${isConn ? `
         <button class="btn sm g" data-test="${p.id}" title="Test API connection and verify exact Page">🔍 Test &amp; Verify</button>
-        <button class="btn sm g" data-d="${p.id}" title="Disconnect this channel">Disconnect</button>
+        <button class="btn sm g" data-disc="${p.id}" title="Disconnect this channel">Disconnect</button>
       ` : `
         <button class="btn sm" data-c="${p.id}">Link Channel</button>
       `}
