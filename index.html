@@ -1,0 +1,2149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b2015">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<script src="/config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<title>PostSync · Meta &amp; Social Media Publisher</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  color-scheme:dark;
+  --bg:#091b12;
+  --bg-sub:#0e281b;
+  --card:#123424;
+  --card-hover:#163d2b;
+  --ink:#f6f8f2;
+  --mut:#95aa9a;
+  --mut-dark:#6b8070;
+  --line:#1c4b34;
+  --line-light:#286345;
+  --acc:#d4e157;
+  --acc2:#8bc34a;
+  --onacc:#0d2818;
+  --ok:#4ade80;
+  --warn:#fbbf24;
+  --err:#f87171;
+  --fb:#1877f2;
+  --ig:linear-gradient(135deg,#feda75,#fa7e1e 30%,#d62976 65%,#4f5bd5);
+  --sh:0 12px 36px rgba(0,0,0,.4);
+  --radius:18px;
+}
+:root[data-theme="light"]{
+  color-scheme:light;
+  --bg:#f4f6f0;
+  --bg-sub:#e8ece2;
+  --card:#ffffff;
+  --card-hover:#f7f9f4;
+  --ink:#14271c;
+  --mut:#5e7264;
+  --mut-dark:#8ca092;
+  --line:#d5ded2;
+  --line-light:#c0cdbd;
+  --acc:#2e7d32;
+  --acc2:#689f38;
+  --onacc:#ffffff;
+  --ok:#16a34a;
+  --warn:#d97706;
+  --err:#dc2626;
+  --sh:0 10px 30px rgba(25,50,30,.08);
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font:14px/1.5 "Plus Jakarta Sans",system-ui,-apple-system,sans-serif;
+  overflow-x:hidden;
+}
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  background:radial-gradient(700px 350px at 85% -5%,color-mix(in srgb,var(--acc) 15%,transparent),transparent),radial-gradient(600px 350px at 0% 15%,color-mix(in srgb,var(--acc2) 12%,transparent),transparent);
+  pointer-events:none;
+}
+.app{display:grid;grid-template-columns:250px 1fr;min-height:100vh}
+
+/* Sidebar */
+aside{
+  padding:22px 16px;
+  position:sticky;
+  top:0;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  border-right:1px solid var(--line);
+  background:var(--bg-sub);
+  z-index:30;
+}
+.brand{display:flex;align-items:center;gap:12px;margin:0 8px 24px;text-decoration:none;color:inherit}
+.brand-icon{
+  width:38px;height:38px;border-radius:12px;
+  background:linear-gradient(135deg,var(--acc),var(--acc2));
+  display:grid;place-items:center;color:var(--onacc);
+  font-weight:900;font-size:18px;box-shadow:0 6px 18px color-mix(in srgb,var(--acc) 40%,transparent);
+}
+.brand-text b{display:block;font-size:17px;font-weight:800;letter-spacing:-.3px}
+.brand-text span{display:block;font-size:11px;color:var(--mut);font-weight:600}
+
+/* User status card in sidebar */
+.user-card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:10px 12px;
+  margin-bottom:18px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.u-avatar{
+  width:34px;height:34px;border-radius:10px;
+  background:linear-gradient(135deg,#2e7d32,#8bc34a);
+  display:grid;place-items:center;font-weight:800;color:#fff;font-size:13px;flex:none;
+}
+.u-info{flex:1;min-width:0}
+.u-name{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.u-role{
+  display:inline-block;font-size:10px;font-weight:800;text-transform:uppercase;
+  padding:1px 6px;border-radius:6px;letter-spacing:.3px;
+}
+.u-role.admin{background:color-mix(in srgb,var(--acc) 25%,transparent);color:var(--acc)}
+.u-role.editor{background:color-mix(in srgb,#38bdf8 20%,transparent);color:#38bdf8}
+.theme-btn{
+  border:1px solid var(--line);background:none;color:var(--mut);
+  width:30px;height:30px;border-radius:8px;cursor:pointer;display:grid;place-items:center;font-size:14px;
+}
+.theme-btn:hover{color:var(--ink);background:var(--card-hover)}
+
+/* Navigation */
+nav button{
+  display:flex;width:100%;align-items:center;gap:12px;
+  padding:11px 14px;margin-bottom:5px;border:0;background:none;
+  color:var(--mut);font:600 13.5px inherit;border-radius:12px;
+  cursor:pointer;text-align:left;transition:.15s;
+}
+nav button span{font-size:17px;display:grid;place-items:center;width:22px}
+nav button:hover{background:var(--card);color:var(--ink)}
+nav button.on{background:var(--card);color:var(--acc);font-weight:700;border:1px solid var(--line)}
+
+.sidebar-bottom{margin-top:auto;font-size:11.5px;color:var(--mut)}
+.security-badge{
+  display:flex;align-items:center;gap:8px;padding:9px 12px;
+  background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:8px;
+}
+.sec-dot{width:8px;height:8px;border-radius:50%;background:var(--ok);flex:none}
+
+/* Main Content */
+main{padding:28px 36px 50px;max-width:1280px;width:100%}
+.view-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:22px}
+h1{font-size:26px;margin:0 0 4px;font-weight:800;letter-spacing:-.4px}
+h1 b{background:linear-gradient(90deg,var(--acc),var(--acc2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--mut);margin:0;font-size:13px}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:20px;
+  box-shadow:var(--sh);
+  margin-bottom:18px;
+  position:relative;
+}
+.ch{display:flex;align-items:center;gap:10px;margin-bottom:14px;font-weight:750;font-size:14.5px}
+.ch small{margin-left:auto;color:var(--mut);font-weight:500;font-size:11.5px}
+
+/* Grid Layout */
+.grid{display:grid;grid-template-columns:1.05fr 0.95fr;gap:24px;align-items:start}
+.sticky{position:sticky;top:20px}
+
+/* Form Controls */
+textarea,input[type=text],input[type=password],input[type=datetime-local],select{
+  width:100%;border:1px solid var(--line);background:var(--bg);color:var(--ink);
+  border-radius:12px;padding:12px 14px;font:inherit;outline:0;transition:.15s;
+}
+textarea:focus,input:focus,select:focus{border-color:var(--acc);box-shadow:0 0 0 3px color-mix(in srgb,var(--acc) 15%,transparent)}
+textarea{min-height:115px;resize:vertical;line-height:1.45}
+
+/* Buttons */
+.btn{
+  border:0;background:linear-gradient(135deg,var(--acc),var(--acc2));
+  color:var(--onacc);font:700 13.5px inherit;padding:10px 18px;
+  border-radius:12px;cursor:pointer;box-shadow:0 6px 18px color-mix(in srgb,var(--acc) 30%,transparent);
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:.15s;
+}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.05)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn.sm{padding:7px 12px;font-size:12px;border-radius:9px;box-shadow:none}
+.btn.g{background:var(--bg);color:var(--ink);border:1px solid var(--line);box-shadow:none}
+.btn.g:hover{background:var(--card-hover);border-color:var(--line-light)}
+.btn.wa{background:#25d366;color:#032510;box-shadow:0 6px 18px rgba(37,211,102,.3)}
+.btn.danger{background:#dc2626;color:#fff;box-shadow:none}
+
+/* Account Selection Bar */
+.ptbar{
+  display:flex;align-items:center;gap:10px;border:1px solid var(--line);
+  border-radius:12px;padding:9px 12px;background:var(--bg);cursor:pointer;transition:.15s;
+}
+.ptbar:hover{border-color:var(--line-light)}
+.av{display:flex;margin-right:2px}
+.av .dot{margin-right:-8px;border:2px solid var(--bg)}
+
+.plats{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
+.pl{
+  display:flex;align-items:center;gap:11px;border:1.5px solid var(--line);
+  border-radius:14px;padding:10px;cursor:pointer;background:var(--bg);transition:.15s;position:relative;
+}
+.pl:hover{border-color:var(--line-light)}
+.pl.sel{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 9%,transparent)}
+.pl.off{opacity:.5}
+.pl.sel::after{content:"✓";position:absolute;top:8px;right:10px;color:var(--acc);font-weight:800;font-size:12px}
+.pl small{display:block;color:var(--mut);font-size:11px}
+.dot{width:34px;height:34px;border-radius:10px;color:#fff;font-weight:800;display:grid;place-items:center;flex:none;font-size:13px}
+.dot.s{width:22px;height:22px;border-radius:7px;font-size:10px}
+
+/* =======================================================
+   META BUSINESS SUITE STYLE MEDIA SECTION
+   ======================================================= */
+.meta-media-header{
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;
+}
+.meta-media-table{
+  border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--bg);margin-bottom:12px;
+}
+.meta-file-row{
+  display:flex;align-items:center;gap:12px;padding:10px 12px;
+  border-bottom:1px solid var(--line);transition:.15s;position:relative;
+}
+.meta-file-row:last-child{border-bottom:0}
+.meta-file-row:hover{background:var(--card-hover)}
+.meta-order{
+  font-size:11px;font-weight:800;color:var(--mut);width:18px;text-align:center;flex:none;
+}
+.meta-thumb{
+  width:46px;height:46px;border-radius:8px;overflow:hidden;background:#000;
+  border:1px solid var(--line);flex:none;position:relative;
+}
+.meta-thumb img,.meta-thumb video{width:100%;height:100%;object-fit:cover}
+.meta-thumb-badge{
+  position:absolute;bottom:2px;right:2px;background:#000a;color:#fff;
+  font-size:8px;font-weight:800;padding:1px 3px;border-radius:4px;
+}
+.meta-file-info{flex:1;min-width:0}
+.meta-file-name{
+  font-size:13px;font-weight:700;color:var(--ink);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;
+}
+.meta-file-meta{
+  font-size:11px;color:var(--mut);display:flex;align-items:center;gap:6px;margin-top:2px;
+}
+.meta-pill{
+  font-size:9.5px;font-weight:800;padding:2px 6px;border-radius:6px;
+  background:color-mix(in srgb,var(--acc) 20%,transparent);color:var(--acc);
+}
+.meta-pill.reel{background:color-mix(in srgb,#38bdf8 20%,transparent);color:#38bdf8}
+.meta-pill.cover{background:color-mix(in srgb,var(--warn) 20%,transparent);color:var(--warn)}
+.meta-actions{display:flex;gap:4px;flex:none}
+.btn-icon{
+  width:28px;height:28px;border-radius:8px;border:1px solid var(--line);
+  background:var(--card);color:var(--mut);cursor:pointer;display:grid;place-items:center;
+  font-size:11px;transition:.15s;
+}
+.btn-icon:hover{color:var(--ink);border-color:var(--line-light);background:var(--bg)}
+.btn-icon.del:hover{color:var(--err);border-color:var(--err)}
+
+/* Meta-style dropzone */
+.meta-dropzone{
+  border:1.5px dashed var(--line-light);border-radius:12px;padding:16px 14px;
+  display:flex;align-items:center;gap:14px;background:color-mix(in srgb,var(--acc) 3%,transparent);
+  cursor:pointer;transition:.15s;
+}
+.meta-dropzone:hover,.meta-dropzone.ov{
+  border-color:var(--acc);background:color-mix(in srgb,var(--acc) 8%,transparent);
+}
+.meta-drop-icon{
+  width:42px;height:42px;border-radius:10px;background:var(--card);
+  display:grid;place-items:center;font-size:20px;border:1px solid var(--line);flex:none;
+}
+.meta-dropzone b{display:block;font-size:13px;color:var(--ink)}
+.meta-dropzone small{color:var(--mut);font-size:11px}
+
+/* Cover selector */
+.cover-row{
+  display:flex;gap:12px;align-items:center;padding:10px 12px;
+  border:1px solid var(--line);border-radius:12px;background:var(--bg);margin-top:10px;
+}
+.cover-preview{
+  width:46px;height:70px;border-radius:8px;background:var(--bg-sub) center/cover;
+  border:1px solid var(--line);display:grid;place-items:center;font-size:10px;color:var(--mut);flex:none;
+}
+
+/* Caption and chips */
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.chip{
+  border:1px solid var(--line);background:var(--bg);color:var(--mut);
+  border-radius:99px;padding:4px 10px;font:600 11.5px inherit;cursor:pointer;transition:.15s;
+}
+.chip:hover{color:var(--acc);border-color:var(--acc);background:color-mix(in srgb,var(--acc) 5%,transparent)}
+.chip.active{background:var(--acc);color:var(--onacc);border-color:var(--acc);font-weight:700}
+
+/* Switch & Controls */
+.sw{position:relative;width:42px;height:24px;display:inline-block;flex:none}
+.sw input{opacity:0;width:0;height:0}
+.sw i{position:absolute;inset:0;background:var(--line);border-radius:99px;transition:.2s}
+.sw i::after{content:"";position:absolute;left:3px;top:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:.2s}
+.sw input:checked+i{background:var(--acc)}
+.sw input:checked+i::after{transform:translateX(18px)}
+.swl{margin-left:auto;display:flex;align-items:center;gap:10px;font-weight:500;font-size:12.5px;color:var(--mut)}
+
+/* Footer actions */
+.foot{
+  position:sticky;bottom:12px;display:flex;gap:10px;justify-content:flex-end;
+  background:var(--card);border:1px solid var(--line);padding:12px 16px;border-radius:16px;box-shadow:var(--sh);z-index:10;
+}
+
+/* =======================================================
+   META LIVE FEED PREVIEW PANEL (FACEBOOK & INSTAGRAM)
+   ======================================================= */
+.preview-panel{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px;box-shadow:var(--sh);
+}
+.preview-header{
+  display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line);
+}
+.preview-tabs{display:inline-flex;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:3px;gap:2px}
+.preview-tab{
+  border:0;background:none;color:var(--mut);padding:6px 12px;border-radius:7px;
+  font:700 11.5px inherit;cursor:pointer;transition:.15s;
+}
+.preview-tab.on{background:var(--card);color:var(--ink);box-shadow:0 2px 6px rgba(0,0,0,.15)}
+
+/* Facebook Mockup */
+.fb-post-mockup{
+  background:#fff;color:#050505;border-radius:12px;border:1px solid #ced0d4;
+  overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  box-shadow:0 4px 14px rgba(0,0,0,.08);
+}
+.fb-post-header{display:flex;align-items:center;gap:10px;padding:12px 14px 8px}
+.fb-avatar{width:40px;height:40px;border-radius:50%;background:#1877f2;display:grid;place-items:center;color:#fff;font-weight:800;font-size:16px;flex:none}
+.fb-name{font-weight:700;font-size:14px;color:#050505;display:flex;align-items:center;gap:4px}
+.fb-verified{color:#1877f2;font-size:13px}
+.fb-time{font-size:11.5px;color:#65676b;display:flex;align-items:center;gap:4px}
+.fb-caption{padding:4px 14px 10px;font-size:14px;line-height:1.4;white-space:pre-wrap;word-break:break-word}
+.fb-media-wrap{background:#000;position:relative;width:100%;min-height:220px;display:grid;place-items:center;overflow:hidden}
+.fb-media-wrap img,.fb-media-wrap video{width:100%;max-height:480px;object-fit:contain;display:block}
+.fb-carousel-counter{
+  position:absolute;top:10px;right:10px;background:#000a;color:#fff;
+  font-size:11px;font-weight:700;padding:3px 8px;border-radius:12px;
+}
+.fb-nav-btn{
+  position:absolute;top:50%;transform:translateY(-50%);width:32px;height:32px;
+  border-radius:50%;border:0;background:#ffffffe6;color:#050505;font-size:16px;font-weight:800;
+  cursor:pointer;display:grid;place-items:center;box-shadow:0 2px 8px rgba(0,0,0,.3);
+}
+.fb-nav-btn.left{left:10px}
+.fb-nav-btn.right{right:10px}
+.fb-engagement{display:flex;justify-content:space-between;padding:8px 14px;font-size:12px;color:#65676b;border-bottom:1px solid #e4e6eb}
+.fb-reactions{display:flex;align-items:center;gap:4px}
+.fb-like-bubble{width:18px;height:18px;border-radius:50%;background:#1877f2;color:#fff;display:grid;place-items:center;font-size:10px}
+.fb-actions-bar{display:grid;grid-template-columns:repeat(3,1fr);padding:4px 6px;text-align:center}
+.fb-act-btn{
+  border:0;background:none;padding:7px;border-radius:6px;color:#65676b;font-weight:600;font-size:12.5px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.fb-act-btn:hover{background:#f0f2f5}
+
+/* Instagram Mockup */
+.ig-post-mockup{
+  background:#000;color:#fff;border-radius:14px;border:1px solid #262626;
+  overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  box-shadow:0 6px 20px rgba(0,0,0,.4);
+}
+.ig-post-header{display:flex;align-items:center;justify-content:space-between;padding:10px 12px}
+.ig-user-wrap{display:flex;align-items:center;gap:10px}
+.ig-avatar{
+  width:34px;height:34px;border-radius:50%;padding:2px;
+  background:linear-gradient(45deg,#f09433,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888);
+  display:grid;place-items:center;flex:none;
+}
+.ig-avatar-inner{width:100%;height:100%;border-radius:50%;background:#123424;display:grid;place-items:center;font-weight:800;font-size:13px;color:#fff}
+.ig-handle{font-weight:700;font-size:13px;color:#fff}
+.ig-media-wrap{background:#111;position:relative;width:100%;aspect-ratio:1/1;display:grid;place-items:center;overflow:hidden}
+.ig-media-wrap.reel-aspect{aspect-ratio:9/16;max-height:500px}
+.ig-media-wrap img,.ig-media-wrap video{width:100%;height:100%;object-fit:cover}
+.ig-actions-row{display:flex;justify-content:space-between;padding:10px 12px 6px;font-size:18px}
+.ig-left-acts{display:flex;gap:14px;align-items:center}
+.ig-caption-block{padding:0 12px 12px;font-size:13px;line-height:1.4}
+.ig-likes-text{font-weight:700;margin-bottom:4px;font-size:12.5px}
+.ig-cap-text{white-space:pre-wrap;word-break:break-word}
+.ig-cap-text b{margin-right:6px}
+
+/* Reel Overlay Mockup */
+.reel-overlay{position:absolute;inset:0;pointer-events:none;display:flex;flex-direction:column;justify-content:space-between;padding:14px}
+.reel-side-stack{position:absolute;right:10px;bottom:70px;display:flex;flex-direction:column;gap:16px;align-items:center;color:#fff;font-size:11px}
+.reel-side-btn{display:flex;flex-direction:column;align-items:center;gap:3px;text-shadow:0 1px 4px #000}
+.reel-side-btn span{font-size:22px}
+.reel-bot-bar{position:absolute;left:12px;right:60px;bottom:14px;color:#fff;text-shadow:0 1px 4px #000}
+
+/* Stats and Calendars */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--sh)}
+.stat b{font-size:26px;display:block;font-weight:800;letter-spacing:-.5px}
+.stat span{color:var(--mut);font-size:12px;font-weight:600}
+
+.filter-bar{
+  display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center;
+}
+.search-input{max-width:280px;padding:8px 12px;font-size:13px}
+
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;text-align:center}
+.dh{font-size:11px;color:var(--mut);font-weight:700;padding:6px 0}
+.day{
+  aspect-ratio:1;border:0;background:var(--bg);border-radius:10px;color:var(--ink);
+  font:600 13px inherit;cursor:pointer;position:relative;min-height:42px;transition:.15s;
+}
+.day:hover{background:var(--card-hover)}
+.day.today{outline:2px solid var(--acc)}
+.day.on{background:var(--acc);color:var(--onacc);font-weight:800}
+.day i{
+  position:absolute;bottom:3px;left:50%;transform:translateX(-50%);
+  font-style:normal;font-size:9px;background:var(--acc2);color:var(--onacc);
+  border-radius:99px;padding:0 5px;font-weight:800;
+}
+.calh{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-weight:800}
+
+/* Items list */
+.item{
+  display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);
+}
+.item:last-child{border:0}
+.item .c{flex:1;min-width:0}
+.item .c p{margin:0 0 3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;font-size:13.5px}
+.item small{color:var(--mut);font-size:11.5px}
+.pls{display:flex;gap:4px;margin-top:4px}
+
+.badge{
+  font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;
+  background:color-mix(in srgb,var(--ok) 18%,transparent);color:var(--ok);white-space:nowrap;
+}
+.badge.w{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn)}
+.badge.err{background:color-mix(in srgb,var(--err) 18%,transparent);color:var(--err)}
+
+/* Modals */
+.modal{
+  position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;place-items:center;padding:20px;z-index:100;
+  backdrop-filter:blur(5px);
+}
+.modal.show{display:grid}
+.modal .card{width:100%;max-width:440px;margin:0;border:1px solid var(--line-light)}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.modal-header h3{margin:0;font-size:18px;font-weight:800}
+.close-btn{border:0;background:none;color:var(--mut);font-size:18px;cursor:pointer}
+.close-btn:hover{color:var(--ink)}
+
+.toast{
+  position:fixed;bottom:calc(90px + env(safe-area-inset-bottom,0px));
+  left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);
+  padding:11px 22px;border-radius:14px;font-weight:700;font-size:13.5px;
+  display:none;z-index:200;box-shadow:0 10px 30px rgba(0,0,0,.5);
+}
+
+.password-wrap{position:relative}
+.pw-toggle{
+  position:absolute;right:10px;top:50%;transform:translateY(-50%);border:0;background:none;
+  color:var(--mut);cursor:pointer;font-size:14px;padding:4px;
+}
+
+/* Responsive */
+@media(max-width:920px){
+  .app{grid-template-columns:1fr}
+  aside{
+    position:fixed;top:auto;bottom:0;left:0;right:0;height:auto;
+    border-right:0;border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));
+    flex-direction:row;justify-content:space-around;
+  }
+  .brand,.user-card,.sidebar-bottom{display:none}
+  nav{display:flex;width:100%;justify-content:space-around}
+  nav button{flex-direction:column;gap:1px;font-size:10px;padding:5px;margin:0;text-align:center;border:0}
+  main{padding:16px 14px 90px}
+  .grid{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr 1fr}
+  .foot{bottom:calc(70px + env(safe-area-inset-bottom,0px))}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- SIDEBAR -->
+<aside>
+  <a href="#" class="brand">
+    <div class="brand-icon">✦</div>
+    <div class="brand-text">
+      <b>PostSync</b>
+      <span>Meta Business Publisher</span>
+    </div>
+  </a>
+
+  <!-- User Status Card -->
+  <div class="user-card" id="userCard">
+    <div class="u-avatar" id="uAv">A</div>
+    <div class="u-info">
+      <div class="u-name" id="uEmail">Admin Workspace</div>
+      <span class="u-role admin" id="uRole">Admin</span>
+    </div>
+    <button class="theme-btn" id="themeToggle" title="Toggle Dark/Light Mode">🌙</button>
+  </div>
+
+  <nav>
+    <button data-v="create" class="on"><span>✍️</span>Create</button>
+    <button data-v="sched"><span>🗓️</span>Schedule</button>
+    <button data-v="accounts"><span>🔗</span>Accounts</button>
+    <button data-v="activity"><span>📊</span>Activity</button>
+    <button data-v="admin" id="nadm"><span>🛡️</span>Team &amp; Security</button>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <div class="security-badge">
+      <div class="sec-dot"></div>
+      <div>
+        <strong style="display:block;font-size:11px">Protected Workspace</strong>
+        <span style="font-size:10px;color:var(--mut)" id="syncStatus">Local Encrypted Demo</span>
+      </div>
+    </div>
+    <button class="btn sm g" id="adminLockBtn" style="width:100%;margin-top:6px">🔒 Switch / Sign In</button>
+  </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main>
+
+  <!-- ================= CREATE VIEW ================= -->
+  <section id="v-create">
+    <div class="view-header">
+      <div>
+        <h1>Create <b>post</b></h1>
+        <p class="sub">Compose once, preview live, and publish across Meta &amp; social channels.</p>
+      </div>
+      <div>
+        <button class="btn sm g" id="btnDrafts" style="margin-right:6px">📁 Drafts</button>
+        <button class="btn sm g" id="btnPresetKCAL">🌿 KCAL Presets</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- LEFT: Form Controls -->
+      <div>
+        <!-- Account Destination -->
+        <div class="card">
+          <div class="ch">
+            Destination Accounts
+            <small id="accCount">0 selected</small>
+          </div>
+          <div class="ptbar" id="pt">
+            <div class="av" id="pav"></div>
+            <b id="ptx" style="font-size:13px">Select destination platforms</b>
+            <span style="margin-left:auto;color:var(--mut);font-size:11px">▼</span>
+          </div>
+          <div class="plats" id="plats" style="margin-top:12px;display:none"></div>
+        </div>
+
+        <!-- Meta Style Media Card -->
+        <div class="card">
+          <div class="meta-media-header">
+            <div class="ch" style="margin-bottom:0">
+              Media Assets
+              <small id="mediaCounter">0 / 10 assets</small>
+            </div>
+            <div style="display:flex;gap:6px">
+              <button class="btn sm g" id="btnAddPhoto">🖼️ Add Photo</button>
+              <button class="btn sm g" id="btnAddVideo">🎬 Add Video / Reel</button>
+            </div>
+          </div>
+
+          <!-- Clean Meta-style file list -->
+          <div id="metaFileList" class="meta-media-table" style="display:none"></div>
+
+          <!-- Compact Drag & Drop Zone -->
+          <div class="meta-dropzone" id="dp">
+            <div class="meta-drop-icon">📤</div>
+            <div>
+              <b>Drag &amp; drop photos or video here, or tap to browse</b>
+              <small>Supports high-resolution JPG, PNG, WEBP, and MP4 (Reels / Stories)</small>
+            </div>
+          </div>
+
+          <!-- Hidden inputs for file selection -->
+          <input type="file" id="fp" accept="image/*,video/*" multiple hidden>
+          <input type="file" id="fpPhoto" accept="image/*" multiple hidden>
+          <input type="file" id="fpVideo" accept="video/*" hidden>
+          <input type="file" id="cp" accept="image/*" capture="environment" hidden>
+          <input type="file" id="cr" accept="video/*" capture="environment" hidden>
+
+          <!-- Reel Cover Picker -->
+          <div id="cvr" style="display:none;margin-top:14px">
+            <h4 style="margin:0 0 6px;font-size:12.5px;color:var(--mut)">Reel Thumbnail / Cover</h4>
+            <div class="cover-row">
+              <div class="cover-preview" id="cvp">Auto</div>
+              <div style="flex:1">
+                <div style="display:flex;gap:6px">
+                  <button class="btn sm g" id="cu">🖼️ Upload Custom Cover</button>
+                  <button class="btn sm g" id="cf">🎞️ Capture Frame</button>
+                </div>
+                <small id="cvh" style="color:var(--mut);display:block;margin-top:4px;font-size:11px">Auto: first frame of the video</small>
+              </div>
+            </div>
+            <div id="fpk" style="display:none;margin-top:10px">
+              <video id="fv" muted playsinline style="width:100%;max-height:220px;border-radius:10px;background:#000"></video>
+              <input type="range" id="fs" min="0" max="100" value="0" step="0.05" style="width:100%;margin:8px 0">
+              <div style="display:flex;gap:6px">
+                <button class="btn sm" id="fk">Set This Frame as Cover</button>
+                <button class="btn sm g" id="fcn">Cancel</button>
+              </div>
+            </div>
+            <input type="file" id="cvf" accept="image/*" hidden>
+          </div>
+        </div>
+
+        <!-- Post Details & Captions -->
+        <div class="card">
+          <div class="ch">
+            Caption &amp; Text
+            <small id="charCount">0 / 2,200 (IG)</small>
+          </div>
+          <textarea id="cap" maxlength="2200" placeholder="Write an engaging caption with hashtags and emojis..."></textarea>
+          
+          <div style="margin-top:8px">
+            <small style="color:var(--mut);font-weight:700;display:block;margin-bottom:4px">KCAL &amp; Brand Hashtag Sets:</small>
+            <div class="chips" id="tagSets"></div>
+          </div>
+          <div style="margin-top:8px">
+            <small style="color:var(--mut);font-weight:700;display:block;margin-bottom:4px">Quick Emojis:</small>
+            <div class="chips" id="emo"></div>
+          </div>
+        </div>
+
+        <!-- Scheduling -->
+        <div class="card">
+          <div class="ch">
+            Publishing Schedule
+            <span class="swl">
+              Schedule for later
+              <label class="sw"><input type="checkbox" id="sw"><i></i></label>
+            </span>
+          </div>
+          <div id="later" style="display:none;margin-top:12px">
+            <input type="datetime-local" id="dt">
+            <div style="margin-top:10px">
+              <small style="color:var(--mut);font-weight:700;display:block;margin-bottom:4px">Best Times to Post (Peak Engagement):</small>
+              <div class="chips" id="quick"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Meta Live Feed Preview -->
+      <div class="sticky">
+        <div class="preview-panel">
+          <div class="preview-header">
+            <span style="font-weight:800;font-size:13.5px">Meta Live Feed Preview</span>
+            <div class="preview-tabs" id="pvTabs">
+              <button class="preview-tab on" data-pv="fb">Facebook</button>
+              <button class="preview-tab" data-pv="ig">Instagram</button>
+              <button class="preview-tab" data-pv="reel">Reel</button>
+              <button class="preview-tab" data-pv="wa">WhatsApp</button>
+            </div>
+          </div>
+
+          <!-- FACEBOOK PREVIEW MOCKUP -->
+          <div id="fbMock" class="fb-post-mockup">
+            <div class="fb-post-header">
+              <div class="fb-avatar" id="fbPageAv">K</div>
+              <div style="flex:1">
+                <div class="fb-name">
+                  <span id="fbPageName">KCAL · Healthy Kitchen</span>
+                  <span class="fb-verified">●</span>
+                </div>
+                <div class="fb-time">Just now · 🌐 Public</div>
+              </div>
+              <div style="color:#65676b;font-weight:700">•••</div>
+            </div>
+            <div class="fb-caption" id="fbCap">Your post caption will appear here...</div>
+            <div class="fb-media-wrap" id="fbMedia">
+              <div style="color:#65676b;font-size:12px;padding:30px">Upload media to preview on Facebook</div>
+            </div>
+            <div class="fb-engagement">
+              <div class="fb-reactions">
+                <span class="fb-like-bubble">👍</span>
+                <span>48</span>
+              </div>
+              <div>6 comments · 2 shares</div>
+            </div>
+            <div class="fb-actions-bar">
+              <button class="fb-act-btn">👍 Like</button>
+              <button class="fb-act-btn">💬 Comment</button>
+              <button class="fb-act-btn">↗ Share</button>
+            </div>
+          </div>
+
+          <!-- INSTAGRAM PREVIEW MOCKUP -->
+          <div id="igMock" class="ig-post-mockup" style="display:none">
+            <div class="ig-post-header">
+              <div class="ig-user-wrap">
+                <div class="ig-avatar">
+                  <div class="ig-avatar-inner" id="igUserAv">K</div>
+                </div>
+                <div>
+                  <div class="ig-handle" id="igHandle">kcal_official</div>
+                  <small style="color:#a8a8a8;font-size:10px">Colombo, Sri Lanka</small>
+                </div>
+              </div>
+              <div style="color:#fff;font-weight:700">•••</div>
+            </div>
+            <div class="ig-media-wrap" id="igMedia">
+              <div style="color:#a8a8a8;font-size:12px;padding:30px">Upload photos to preview Instagram feed</div>
+            </div>
+            <div class="ig-actions-row">
+              <div class="ig-left-acts">
+                <span>♡</span>
+                <span>💬</span>
+                <span>▷</span>
+              </div>
+              <span>▫</span>
+            </div>
+            <div class="ig-caption-block">
+              <div class="ig-likes-text">Liked by organic_lifestyle and others</div>
+              <div class="ig-cap-text"><b id="igCapHandle">kcal_official</b><span id="igCap">Your caption here...</span></div>
+              <small style="color:#a8a8a8;font-size:10px;display:block;margin-top:6px;text-transform:uppercase">Just now</small>
+            </div>
+          </div>
+
+          <!-- REEL PREVIEW MOCKUP -->
+          <div id="reelMock" class="ig-post-mockup" style="display:none">
+            <div class="ig-media-wrap reel-aspect" id="reelMedia" style="position:relative">
+              <div style="color:#a8a8a8;font-size:12px;padding:30px;text-align:center">Add a vertical video (9:16) to preview Reel</div>
+              <div class="reel-side-stack">
+                <div class="reel-side-btn"><span>❤️</span>1.2k</div>
+                <div class="reel-side-btn"><span>💬</span>84</div>
+                <div class="reel-side-btn"><span>↗</span>Share</div>
+                <div class="reel-side-btn"><span>•••</span></div>
+              </div>
+              <div class="reel-bot-bar">
+                <div style="font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px">
+                  <span id="reelHandle">@kcal_official</span>
+                  <span style="font-size:11px;background:#ffffff33;padding:2px 6px;border-radius:4px">Follow</span>
+                </div>
+                <div id="reelCap" style="font-size:12px;margin-top:4px;max-height:40px;overflow:hidden">Caption...</div>
+                <div style="font-size:11px;opacity:.9;margin-top:4px">🎵 Original Audio · kcal_official</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- WHATSAPP PREVIEW MOCKUP -->
+          <div id="waMock" class="card" style="display:none;background:#0b141a;color:#e9edef;border-color:#222e35">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+              <div style="width:36px;height:36px;border-radius:50%;background:#25d366;color:#000;display:grid;place-items:center;font-weight:800">K</div>
+              <div>
+                <b style="font-size:13.5px">KCAL Official Channel</b>
+                <small style="display:block;color:#8696a0;font-size:11px">Forwarded update</small>
+              </div>
+            </div>
+            <div id="waMedia" style="border-radius:8px;overflow:hidden;background:#111b21;margin-bottom:8px"></div>
+            <div id="waCap" style="font-size:13px;line-height:1.4">WhatsApp update text...</div>
+          </div>
+
+          <!-- Upload Progress Box -->
+          <div class="card" id="jobsc" style="display:none;margin-top:14px;background:var(--bg)">
+            <div id="jobs"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Floating bottom action bar -->
+    <div class="foot">
+      <button class="btn g" id="clr">✕ Clear</button>
+      <button class="btn g" id="dr">💾 Save Draft</button>
+      <button class="btn" id="go">🚀 Publish</button>
+    </div>
+  </section>
+
+  <!-- ================= SCHEDULE & CALENDAR VIEW ================= -->
+  <section id="v-sched" hidden>
+    <div class="view-header">
+      <div>
+        <h1>Content <b>calendar</b></h1>
+        <p class="sub">View, manage, and filter scheduled posts across all platforms.</p>
+      </div>
+      <div class="filter-bar">
+        <input type="text" id="calSearch" class="search-input" placeholder="🔍 Search queued posts...">
+        <select id="calFilterPlat" style="width:auto;padding:8px 12px;font-size:12px">
+          <option value="">All Platforms</option>
+          <option value="ig">Instagram</option>
+          <option value="fb">Facebook</option>
+          <option value="tt">TikTok</option>
+          <option value="yt">YouTube</option>
+          <option value="wa">WhatsApp</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="calh">
+          <button class="btn sm g" id="pm">‹</button>
+          <span id="mn" style="font-size:16px"></span>
+          <button class="btn sm g" id="nm">›</button>
+        </div>
+        <div class="cal" id="cal"></div>
+      </div>
+      <div class="card">
+        <div class="ch">
+          Queue &amp; Approvals
+          <small id="qd">All upcoming</small>
+        </div>
+        <div id="q"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ACCOUNTS VIEW ================= -->
+  <section id="v-accounts" hidden>
+    <div class="view-header">
+      <div>
+        <h1>Linked <b>accounts</b></h1>
+        <p class="sub">Manage social channels and secure API credentials.</p>
+      </div>
+      <div class="badge" id="accountsSecStatus">🛡️ End-to-End Server Encrypted</div>
+    </div>
+    <div id="accs"></div>
+  </section>
+
+  <!-- ================= ACTIVITY VIEW ================= -->
+  <section id="v-activity" hidden>
+    <div class="view-header">
+      <div>
+        <h1>Publishing <b>activity</b></h1>
+        <p class="sub">Track live post deliveries, analytics, and error diagnostics.</p>
+      </div>
+      <div class="filter-bar">
+        <input type="text" id="actSearch" class="search-input" placeholder="🔍 Search history...">
+      </div>
+    </div>
+    <div class="stats" id="stats"></div>
+    <div class="card" id="hist"></div>
+  </section>
+
+  <!-- ================= ADMIN & SECURITY VIEW ================= -->
+  <section id="v-admin" hidden>
+    <div class="view-header">
+      <div>
+        <h1>Team &amp; <b>Security</b></h1>
+        <p class="sub">Role-Based Access Control, token audits, and administrative logs.</p>
+      </div>
+      <div class="badge">Admin Restricted</div>
+    </div>
+
+    <div class="card">
+      <div class="ch">Invite a Team Member</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:center">
+        <input type="text" id="ie" placeholder="colleague@company.com">
+        <select id="ir">
+          <option value="editor">Editor (Drafts only · Requires approval)</option>
+          <option value="admin">Admin (Full publish &amp; API token access)</option>
+        </select>
+        <button class="btn" id="iv">Send Invite</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ch">Team Members</div>
+      <div id="team"></div>
+    </div>
+
+    <div class="card">
+      <div class="ch">
+        Security Audit Log
+        <small>Last 50 recorded security &amp; publish events</small>
+      </div>
+      <div id="audit"></div>
+    </div>
+  </section>
+
+</main>
+</div>
+
+<!-- ================= MODALS ================= -->
+
+<!-- Connect Account Modal (with token masking) -->
+<div class="modal" id="md">
+  <div class="card">
+    <div class="modal-header">
+      <h3 id="mt">Connect Account</h3>
+      <button class="close-btn" id="mc">✕</button>
+    </div>
+    <p class="sub" style="margin-bottom:14px;font-size:12.5px">
+      Configure your profile handle and secure Graph API credentials. Tokens are stored in server-only secrets.
+    </p>
+    <div style="margin-bottom:10px">
+      <label style="font-size:11px;font-weight:700;color:var(--mut)">Profile / Page Handle</label>
+      <input type="text" id="mh" placeholder="@kcal_kitchen">
+    </div>
+    <div id="tokenFields" style="display:none;margin-bottom:10px">
+      <label style="font-size:11px;font-weight:700;color:var(--mut)">Meta Access Token (Never exposed to client)</label>
+      <div class="password-wrap">
+        <input type="password" id="mtk" placeholder="EAAB...">
+        <button type="button" class="pw-toggle" id="tkToggle">👁️</button>
+      </div>
+      <label style="font-size:11px;font-weight:700;color:var(--mut);margin-top:8px;display:block">Instagram Account ID / Facebook Page ID</label>
+      <input type="text" id="mid" placeholder="17841400000000000">
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px">
+      <button class="btn sm g" id="mCancel">Cancel</button>
+      <button class="btn sm" id="mo">Save &amp; Authorize</button>
+    </div>
+  </div>
+</div>
+
+<!-- Admin Login / Sign In Modal -->
+<div class="modal" id="lg">
+  <div class="card">
+    <div class="modal-header">
+      <h3>PostSync Admin Login</h3>
+      <button class="close-btn" id="lgClose">✕</button>
+    </div>
+    <p class="sub" style="margin-bottom:16px;font-size:12.5px">
+      Sign in with your company account or master access credentials to manage social media channels.
+    </p>
+    
+    <div style="margin-bottom:12px">
+      <label style="font-size:11.5px;font-weight:700;color:var(--mut)">Work Email</label>
+      <input type="text" id="le" placeholder="admin@company.com" autocomplete="email">
+    </div>
+    <div style="margin-bottom:14px">
+      <label style="font-size:11.5px;font-weight:700;color:var(--mut)">Password / Master Access PIN</label>
+      <div class="password-wrap">
+        <input type="password" id="lp" placeholder="••••••••••••" autocomplete="current-password">
+        <button type="button" class="pw-toggle" id="lpToggle">👁️</button>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:16px">
+      <label style="font-size:12px;color:var(--mut);display:flex;align-items:center;gap:6px;cursor:pointer">
+        <input type="checkbox" id="rememberMe" checked> Remember this device
+      </label>
+      <a href="#" id="lup" style="margin-left:auto;font-size:12px;color:var(--acc);text-decoration:none">Forgot password?</a>
+    </div>
+    <button class="btn" id="lin" style="width:100%;padding:12px">Sign In to Workspace</button>
+    
+    <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--line);text-align:center">
+      <small style="color:var(--mut);font-size:11px">Need local demo mode? Tap Sign In with demo credentials.</small>
+    </div>
+  </div>
+</div>
+
+<!-- Set Password Modal -->
+<div class="modal" id="pw">
+  <div class="card">
+    <div class="modal-header">
+      <h3>Set Your Password</h3>
+    </div>
+    <p class="sub" style="margin-bottom:14px;font-size:12.5px">Use at least 10 characters with mixed letters and numbers.</p>
+    <div class="password-wrap" style="margin-bottom:14px">
+      <input type="password" id="np" placeholder="New secure password" autocomplete="new-password">
+    </div>
+    <button class="btn" id="npb" style="width:100%">Save Password</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ================= JAVASCRIPT LOGIC ================= -->
+<script>
+const P = [
+  { id: 'ig', n: 'Instagram', c: 'linear-gradient(135deg,#feda75,#fa7e1e 30%,#d62976 65%,#4f5bd5)', l: 'IG', t: ['post','reel'], s: 'Feed Post · Reels' },
+  { id: 'fb', n: 'Facebook Page', c: '#1877f2', l: 'f', t: ['post','reel'], s: 'Page Feed · Video' },
+  { id: 'tt', n: 'TikTok', c: '#111', l: '♪', t: ['reel'], s: 'Short Video only' },
+  { id: 'yt', n: 'YouTube', c: '#f00', l: '▶', t: ['reel'], s: 'Shorts' },
+  { id: 'wa', n: 'WhatsApp Channel', c: '#25d366', l: 'W', t: ['post','reel'], s: 'Share Assist', man: 1 }
+];
+
+const KCAL_TAGS = {
+  'KCAL Brand': '#kcal #healthyliving #nutrition #eatclean #freshfood #srilanka',
+  'Food & Menu': '#delicious #salads #cleanfood #yogurtbowl #foodiesl #colombofood',
+  'Fitness & Wellness': '#wellness #gymlife #fitfood #protein #healthyeating #mindfuleating',
+  'Trending Sri Lanka': '#srilanka #colombo #lka #viral #trending #reels'
+};
+
+let acc = {};
+let sel = {};
+let media = { post: [], reel: null };
+let when = 'now';
+let posts = [];
+let cm = new Date();
+let selDay = null;
+let currentPv = 'fb'; // fb, ig, reel, wa
+let busy = false;
+let cur = null;
+let cover = null;
+let pi = 0; // carousel index
+let userEmail = 'admin@kcal.local';
+let userRole = 'admin';
+
+// Load stored state
+try {
+  acc = JSON.parse(localStorage.getItem('ps_acc') || '{}');
+  posts = JSON.parse(localStorage.getItem('ps_posts') || '[]');
+  const storedTheme = localStorage.getItem('ps_theme');
+  if (storedTheme) document.documentElement.setAttribute('data-theme', storedTheme);
+} catch (e) {}
+
+// Default demo accounts if none set
+if (Object.keys(acc).length === 0) {
+  acc = { ig: '@kcal_official', fb: '@kcalhealthykitchen', wa: 'KCAL Official' };
+  sel = { ig: true, fb: true };
+}
+
+const $ = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
+
+const save = () => {
+  try {
+    localStorage.setItem('ps_acc', JSON.stringify(acc));
+    localStorage.setItem('ps_posts', JSON.stringify(posts.slice(0, 100)));
+  } catch (e) {}
+};
+
+const esc = s => (s || '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+const toast = m => {
+  const t = $('#toast');
+  t.textContent = m;
+  t.style.display = 'block';
+  clearTimeout(toast.t);
+  toast.t = setTimeout(() => t.style.display = 'none', 3000);
+};
+
+const IC = {
+  ig: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" fill="#fff" stroke="none"/></svg>',
+  fb: '<svg viewBox="0 0 24 24" fill="#fff"><path d="M13.5 21v-8h2.7l.4-3.2h-3.1V7.9c0-.9.3-1.5 1.6-1.5h1.7V3.5c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.5-4 4.1v2.3H7.7V13h2.7v8h3.1z"/></svg>',
+  tt: '<svg viewBox="0 0 24 24" fill="#fff"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>',
+  yt: '<svg viewBox="0 0 24 24" fill="#fff"><path d="M9 7v10l8-5z"/></svg>',
+  wa: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"><path d="M12 3.2a8.8 8.8 0 0 0-7.5 13.4L3.2 20.8l4.3-1.2A8.8 8.8 0 1 0 12 3.2z"/><path fill="#fff" stroke="none" d="M9.2 7.8c-.3 0-.7.2-.9.6-.4.8-.2 1.8.5 2.9 1 1.6 2.3 2.7 3.9 3.3 1 .4 1.9.2 2.3-.5.2-.4.2-.7 0-.9l-1.5-.8c-.2-.1-.4 0-.6.2l-.4.5c-1-.4-1.8-1.2-2.3-2.1l.4-.5c.1-.2.1-.4 0-.6L9.8 8c-.1-.1-.3-.2-.6-.2z"/></svg>'
+};
+
+const dot = (p, s) => `<span class="dot ${s ? 's' : ''}" style="background:${p.c}">${IC[p.id]}</span>`;
+const key = d => d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+const loc = d => new Date(d - d.getTimezoneOffset() * 6e4).toISOString().slice(0, 16);
+const fmt = t => new Date(t).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
+const fsz = b => b > 1048576 ? (b / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(b / 1024)) + ' KB';
+const dur = d => Math.floor(d / 60) + ':' + String(Math.floor(d % 60)).padStart(2, '0');
+
+// Navigation
+$$('nav button').forEach(b => b.onclick = () => {
+  $$('nav button').forEach(x => x.classList.toggle('on', x === b));
+  ['create','sched','accounts','activity','admin'].forEach(v => {
+    const sec = $('#v-' + v);
+    if (sec) sec.hidden = v !== b.dataset.v;
+  });
+  window.scrollTo(0, 0);
+  render();
+  if (b.dataset.v === 'admin') loadAdmin();
+});
+
+// Theme switcher
+$('#themeToggle').onclick = () => {
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  const newTheme = isLight ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', newTheme);
+  localStorage.setItem('ps_theme', newTheme);
+  $('#themeToggle').textContent = newTheme === 'light' ? '☀️' : '🌙';
+};
+
+/* =======================================================
+   MEDIA HANDLING (META BUSINESS SUITE STYLE)
+   ======================================================= */
+function addFiles(files) {
+  files = [...files];
+  let im = 0, vd = 0;
+  files.forEach(f => {
+    if (f.type.startsWith('image/')) {
+      if (media.post.length < 10) {
+        const m = { file: f, url: URL.createObjectURL(f) };
+        media.post.push(m);
+        const img = new Image();
+        img.onload = () => { m.w = img.naturalWidth; m.h = img.naturalHeight; drawMediaList(); updatePreviews(); };
+        img.src = m.url;
+        im++;
+      }
+    } else if (f.type.startsWith('video/') && !vd) {
+      if (media.reel) URL.revokeObjectURL(media.reel.url);
+      media.reel = { file: f, url: URL.createObjectURL(f) };
+      vd++;
+      setCover(null);
+      const v = document.createElement('video');
+      v.preload = 'metadata';
+      v.onloadedmetadata = () => {
+        media.reel.w = v.videoWidth;
+        media.reel.h = v.videoHeight;
+        media.reel.d = v.duration;
+        drawMediaList();
+        updatePreviews();
+      };
+      v.src = media.reel.url;
+    }
+  });
+
+  if (!im && !vd) return toast('Please select valid photos or videos');
+  if (vd) currentPv = 'reel';
+  else if (im) currentPv = 'fb';
+
+  drawMediaList();
+  updatePreviews();
+}
+
+// File triggers
+$('#dp').onclick = () => $('#fp').click();
+$('#btnAddPhoto').onclick = () => $('#fpPhoto').click();
+$('#btnAddVideo').onclick = () => $('#fpVideo').click();
+
+['#fp', '#fpPhoto', '#fpVideo'].forEach(selStr => {
+  const el = $(selStr);
+  if (el) el.onchange = e => { addFiles(e.target.files); e.target.value = ''; };
+});
+
+// Drag & drop
+(function() {
+  const z = $('#dp');
+  z.ondragover = e => { e.preventDefault(); z.classList.add('ov'); };
+  z.ondragleave = () => z.classList.remove('ov');
+  z.ondrop = e => { e.preventDefault(); z.classList.remove('ov'); addFiles(e.dataTransfer.files); };
+})();
+
+// Reorder & Remove media
+document.addEventListener('click', e => {
+  // Remove
+  const rm = e.target.closest('[data-rm]');
+  if (rm) {
+    if (rm.dataset.rm === 'reel') {
+      URL.revokeObjectURL(media.reel.url);
+      media.reel = null;
+      setCover(null);
+    } else {
+      const idx = +rm.dataset.i;
+      URL.revokeObjectURL(media.post[idx].url);
+      media.post.splice(idx, 1);
+    }
+    drawMediaList();
+    updatePreviews();
+    return;
+  }
+  // Move Up
+  const up = e.target.closest('[data-up]');
+  if (up) {
+    const i = +up.dataset.up;
+    if (i > 0) {
+      const temp = media.post[i];
+      media.post[i] = media.post[i - 1];
+      media.post[i - 1] = temp;
+      drawMediaList();
+      updatePreviews();
+    }
+    return;
+  }
+  // Move Down
+  const down = e.target.closest('[data-dn]');
+  if (down) {
+    const i = +down.dataset.dn;
+    if (i < media.post.length - 1) {
+      const temp = media.post[i];
+      media.post[i] = media.post[i + 1];
+      media.post[i + 1] = temp;
+      drawMediaList();
+      updatePreviews();
+    }
+    return;
+  }
+});
+
+// Render the Meta Business Suite style file list
+function drawMediaList() {
+  const total = media.post.length + (media.reel ? 1 : 0);
+  $('#mediaCounter').textContent = `${total} / 10 assets`;
+
+  const listEl = $('#metaFileList');
+  if (total === 0) {
+    listEl.style.display = 'none';
+    $('#cvr').style.display = 'none';
+    return;
+  }
+
+  listEl.style.display = 'block';
+  let html = '';
+
+  // Render photo carousel rows
+  media.post.forEach((m, idx) => {
+    html += `
+    <div class="meta-file-row">
+      <div class="meta-order">#${idx + 1}</div>
+      <div class="meta-thumb">
+        <img src="${m.url}" alt="">
+        <span class="meta-thumb-badge">${idx + 1}</span>
+      </div>
+      <div class="meta-file-info">
+        <span class="meta-file-name" title="${esc(m.file.name)}">${esc(m.file.name)}</span>
+        <div class="meta-file-meta">
+          <span class="meta-pill">PHOTO ${media.post.length > 1 ? 'CAROUSEL' : 'FEED'}</span>
+          <span>${m.w ? m.w + ' × ' + m.h + ' px' : ''}</span>
+          <span>•</span>
+          <span>${fsz(m.file.size)}</span>
+        </div>
+      </div>
+      <div class="meta-actions">
+        ${media.post.length > 1 ? `
+          <button class="btn-icon" data-up="${idx}" title="Move Up" ${idx === 0 ? 'disabled style="opacity:.3"' : ''}>▲</button>
+          <button class="btn-icon" data-dn="${idx}" title="Move Down" ${idx === media.post.length - 1 ? 'disabled style="opacity:.3"' : ''}>▼</button>
+        ` : ''}
+        <button class="btn-icon del" data-rm="post" data-i="${idx}" title="Remove Asset">✕</button>
+      </div>
+    </div>`;
+  });
+
+  // Render video / reel row
+  if (media.reel) {
+    html += `
+    <div class="meta-file-row">
+      <div class="meta-order">▶</div>
+      <div class="meta-thumb">
+        <video src="${media.reel.url}#t=0.1" muted preload="metadata"></video>
+        <span class="meta-thumb-badge">VIDEO</span>
+      </div>
+      <div class="meta-file-info">
+        <span class="meta-file-name" title="${esc(media.reel.file.name)}">${esc(media.reel.file.name)}</span>
+        <div class="meta-file-meta">
+          <span class="meta-pill reel">REEL / VIDEO</span>
+          <span>${media.reel.w ? media.reel.w + ' × ' + media.reel.h : ''}</span>
+          <span>•</span>
+          <span>${media.reel.d ? dur(media.reel.d) : ''}</span>
+          <span>•</span>
+          <span>${fsz(media.reel.file.size)}</span>
+        </div>
+      </div>
+      <div class="meta-actions">
+        <button class="btn-icon del" data-rm="reel" title="Remove Reel">✕</button>
+      </div>
+    </div>`;
+  }
+
+  listEl.innerHTML = html;
+  cvDraw();
+}
+
+// Cover handling
+function setCover(blob) {
+  if (cover) URL.revokeObjectURL(cover.url);
+  cover = blob ? { blob, url: URL.createObjectURL(blob) } : null;
+  cvDraw();
+  updatePreviews();
+}
+
+function cvDraw() {
+  $('#cvr').style.display = media.reel ? 'block' : 'none';
+  const c = $('#cvp');
+  c.style.backgroundImage = cover ? `url(${cover.url})` : '';
+  c.textContent = cover ? '' : 'Auto';
+  $('#cvh').textContent = cover ? 'Custom cover selected' : 'Auto: first frame of the video';
+}
+
+$('#cu').onclick = () => $('#cvf').click();
+$('#cvf').onchange = e => {
+  const f = e.target.files[0];
+  if (f && f.type.startsWith('image/')) setCover(f);
+  e.target.value = '';
+};
+
+$('#cf').onclick = () => {
+  if (!media.reel) return;
+  const v = $('#fv');
+  v.onloadedmetadata = () => {
+    $('#fs').max = v.duration || 100;
+    $('#fs').value = 0;
+    v.currentTime = 0;
+  };
+  v.src = media.reel.url;
+  $('#fpk').style.display = 'block';
+};
+
+$('#fs').oninput = () => { $('#fv').currentTime = +$('#fs').value; };
+$('#fk').onclick = () => {
+  const v = $('#fv'), c = document.createElement('canvas');
+  c.width = v.videoWidth; c.height = v.videoHeight;
+  c.getContext('2d').drawImage(v, 0, 0);
+  c.toBlob(b => {
+    if (!b) return toast('Could not capture frame');
+    setCover(b);
+    $('#fpk').style.display = 'none';
+  }, 'image/jpeg', 0.9);
+};
+$('#fcn').onclick = () => $('#fpk').style.display = 'none';
+
+/* =======================================================
+   LIVE META PREVIEW CONTROLS (FB, IG, REEL, WA)
+   ======================================================= */
+$$('#pvTabs button').forEach(b => {
+  b.onclick = () => {
+    $$('#pvTabs button').forEach(x => x.classList.remove('on'));
+    b.classList.add('on');
+    currentPv = b.dataset.pv;
+    updatePreviews();
+  };
+});
+
+function updatePreviews() {
+  // Toggle mockups
+  $('#fbMock').style.display = currentPv === 'fb' ? 'block' : 'none';
+  $('#igMock').style.display = currentPv === 'ig' ? 'block' : 'none';
+  $('#reelMock').style.display = currentPv === 'reel' ? 'block' : 'none';
+  $('#waMock').style.display = currentPv === 'wa' ? 'block' : 'none';
+
+  const caption = $('#cap').value.trim() || 'Your post caption will appear here...';
+  const handle = acc.ig || '@kcal_official';
+  const pageName = acc.fb ? acc.fb.replace('@', '') : 'KCAL · Healthy Kitchen';
+
+  // 1. Facebook Preview
+  $('#fbPageName').textContent = pageName;
+  $('#fbCap').textContent = caption;
+  const fbMedia = $('#fbMedia');
+  if (media.post.length > 0) {
+    if (pi >= media.post.length) pi = 0;
+    const curMedia = media.post[pi];
+    fbMedia.innerHTML = `
+      <img src="${curMedia.url}" alt="">
+      ${media.post.length > 1 ? `
+        <div class="fb-carousel-counter">${pi + 1} / ${media.post.length}</div>
+        <button class="fb-nav-btn left" onclick="navCarousel(-1)">‹</button>
+        <button class="fb-nav-btn right" onclick="navCarousel(1)">›</button>
+      ` : ''}
+    `;
+  } else if (media.reel) {
+    fbMedia.innerHTML = `<video src="${media.reel.url}#t=0.1" controls playsinline></video>`;
+  } else {
+    fbMedia.innerHTML = `<div style="color:#65676b;font-size:12px;padding:30px">Upload media to preview on Facebook</div>`;
+  }
+
+  // 2. Instagram Feed Preview
+  $('#igHandle').textContent = handle.replace('@', '');
+  $('#igCapHandle').textContent = handle.replace('@', '');
+  $('#igCap').textContent = ' ' + caption;
+  const igMedia = $('#igMedia');
+  if (media.post.length > 0) {
+    if (pi >= media.post.length) pi = 0;
+    const curMedia = media.post[pi];
+    igMedia.innerHTML = `
+      <img src="${curMedia.url}" alt="">
+      ${media.post.length > 1 ? `
+        <div class="fb-carousel-counter">${pi + 1} / ${media.post.length}</div>
+        <button class="fb-nav-btn left" onclick="navCarousel(-1)">‹</button>
+        <button class="fb-nav-btn right" onclick="navCarousel(1)">›</button>
+      ` : ''}
+    `;
+  } else if (media.reel) {
+    igMedia.innerHTML = `<video src="${media.reel.url}#t=0.1" muted playsinline></video>`;
+  } else {
+    igMedia.innerHTML = `<div style="color:#a8a8a8;font-size:12px;padding:30px">Upload photos to preview Instagram feed</div>`;
+  }
+
+  // 3. Instagram Reel Preview
+  $('#reelHandle').textContent = handle;
+  $('#reelCap').textContent = caption;
+  const reelMedia = $('#reelMedia');
+  if (media.reel) {
+    reelMedia.querySelector('video')?.remove();
+    const v = document.createElement('video');
+    v.src = media.reel.url + (cover ? '' : '#t=0.1');
+    if (cover) v.poster = cover.url;
+    v.controls = true;
+    v.playsInline = true;
+    reelMedia.prepend(v);
+  }
+
+  // 4. WhatsApp Preview
+  $('#waCap').textContent = caption;
+  const waMedia = $('#waMedia');
+  if (media.post.length > 0) {
+    waMedia.innerHTML = `<img src="${media.post[0].url}" style="width:100%;max-height:240px;object-fit:cover;display:block">`;
+  } else if (media.reel) {
+    waMedia.innerHTML = `<video src="${media.reel.url}#t=0.1" style="width:100%;max-height:240px;object-fit:cover;display:block" muted></video>`;
+  } else {
+    waMedia.innerHTML = '';
+  }
+}
+
+window.navCarousel = function(dir) {
+  if (!media.post.length) return;
+  pi = (pi + dir + media.post.length) % media.post.length;
+  updatePreviews();
+};
+
+/* =======================================================
+   CAPTIONS, HASHTAGS, AND PRESETS
+   ======================================================= */
+$('#cap').oninput = () => {
+  const len = $('#cap').value.length;
+  $('#charCount').textContent = `${len} / 2,200 (IG)`;
+  updatePreviews();
+};
+
+// Tag sets
+$('#tagSets').innerHTML = Object.entries(KCAL_TAGS).map(([k, tags]) => `
+  <button class="chip" data-tags="${tags}">${k}</button>
+`).join('');
+
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-tags]');
+  if (b) {
+    const t = $('#cap');
+    t.value = (t.value ? t.value.trim() + '\n\n' : '') + b.dataset.tags;
+    t.dispatchEvent(new Event('input'));
+    toast('Added ' + b.textContent + ' hashtags');
+  }
+});
+
+// Emojis
+$('#emo').innerHTML = ['🔥','✨','🥗','🥑','🍓','💪','🌱','🇱🇰','☕','🍽️'].map(e => `
+  <button class="chip" data-e="${e}">${e}</button>
+`).join('');
+
+document.addEventListener('click', e => {
+  const c = e.target.closest('[data-e]');
+  if (c) {
+    const t = $('#cap');
+    t.value += c.dataset.e;
+    t.dispatchEvent(new Event('input'));
+  }
+});
+
+// KCAL Presets button
+$('#btnPresetKCAL').onclick = () => {
+  $('#cap').value = "Fuel your body with wholesome goodness! 🌱✨\nFresh, organic salads crafted daily at KCAL Kitchen. Stop by or order online for clean, energizing nutrition.\n\n#kcal #healthyfood #colombofood #eatclean #freshsalad #srilanka";
+  $('#cap').dispatchEvent(new Event('input'));
+  toast('Loaded KCAL post template');
+};
+
+/* =======================================================
+   SCHEDULE LOGIC
+   ======================================================= */
+$('#sw').onchange = () => {
+  when = $('#sw').checked ? 'later' : 'now';
+  $('#later').style.display = when === 'later' ? 'block' : 'none';
+  goLabel();
+};
+
+$('#pt').onclick = () => {
+  const q = $('#plats');
+  q.style.display = q.style.display === 'none' ? 'grid' : 'none';
+};
+
+function goLabel() {
+  $('#go').textContent = (sb && userRole !== 'admin') ? '📨 Submit for Approval' : when === 'later' ? '🗓️ Schedule Post' : '🚀 Publish Now';
+}
+
+// Quick times
+(function() {
+  const n = new Date();
+  const at = (d, h, m = 0) => { const x = new Date(d); x.setHours(h, m, 0, 0); return x; };
+  let lunch = at(n, 12, 30); if (lunch < n) lunch = at(+n + 864e5, 12, 30);
+  let evening = at(n, 19, 0); if (evening < n) evening = at(+n + 864e5, 19, 0);
+  let sat = new Date(n); sat.setDate(n.getDate() + ((6 - n.getDay() + 7) % 7 || 7));
+  sat = at(sat, 11, 0);
+
+  const opts = [
+    ['🥗 Lunch Peak (12:30 PM)', lunch],
+    ['✨ Evening Prime (7:00 PM)', evening],
+    ['Weekend Morning (11:00 AM)', sat]
+  ];
+  $('#quick').innerHTML = opts.map((x, i) => `<button class="chip" data-q="${i}">${x[0]}</button>`).join('');
+  $('#quick').onclick = e => {
+    const b = e.target.closest('[data-q]');
+    if (b) $('#dt').value = loc(opts[+b.dataset.q][1]);
+  };
+  $('#dt').value = loc(evening);
+})();
+
+/* =======================================================
+   DESTINATION SELECTION & PUBLISHING
+   ======================================================= */
+document.addEventListener('click', e => {
+  const pl = e.target.closest('.pl');
+  if (pl) {
+    const id = pl.dataset.p;
+    if (!acc[id]) return toast('Please link ' + P.find(p => p.id === id).n + ' in Accounts first');
+    sel[id] = !sel[id];
+    render();
+    return;
+  }
+  const c = e.target.closest('[data-c]');
+  if (c) openAccountModal(c.dataset.c);
+
+  const d = e.target.closest('[data-d]');
+  if (d) {
+    if (userRole !== 'admin') return toast('Admins only can disconnect accounts');
+    if (confirm('Disconnect ' + P.find(p => p.id === d.dataset.d).n + '?')) {
+      if (sb) adm({ action: 'removeAccount', platform: d.dataset.d });
+      delete acc[d.dataset.d];
+      delete sel[d.dataset.d];
+      save();
+      render();
+      toast('Disconnected account');
+    }
+  }
+});
+
+// Publish
+$('#go').onclick = () => {
+  if (busy) return;
+  const pls = P.filter(p => acc[p.id] && sel[p.id]);
+  if (!media.post.length && !media.reel) return toast('Please add photos or a video first');
+  if (!pls.length) return toast('Select at least one destination platform');
+  if (when === 'later' && (!$('#dt').value || new Date($('#dt').value) < new Date())) {
+    return toast('Please select a valid future date and time');
+  }
+
+  const jobs = [];
+  pls.forEach(p => ['post','reel'].forEach(k => {
+    if ((k === 'post' ? media.post.length : media.reel) && p.t.includes(k)) jobs.push({ p, k });
+  }));
+
+  if (!jobs.length) return toast('Selected platforms do not support this content format');
+
+  busy = true;
+  $('#go').disabled = true;
+  const isSched = when === 'later';
+
+  $('#jobsc').style.display = 'block';
+  $('#jobs').innerHTML = jobs.map((j, i) => `
+    <div style="padding:8px 0;border-bottom:1px solid var(--line)">
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px">
+        <span style="display:flex;gap:8px;align-items:center">${dot(j.p, 1)} ${j.p.n} · ${j.k === 'reel' ? 'Reel' : 'Post'}</span>
+        <span id="s${i}" style="color:var(--mut)">Uploading…</span>
+      </div>
+      <div style="height:6px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:6px">
+        <div id="b${i}" style="height:100%;width:0;background:linear-gradient(90deg,var(--acc),var(--acc2));transition:width .3s"></div>
+      </div>
+    </div>
+  `).join('') + '<div id="waArea"></div>';
+
+  if (sb) {
+    cloudPublish(pls, isSched);
+    return;
+  }
+
+  // Simulated standalone publish
+  let done = 0;
+  jobs.forEach((j, i) => {
+    let w = 0;
+    const iv = setInterval(() => {
+      w += 15 + Math.random() * 25;
+      if (w >= 100) {
+        w = 100;
+        clearInterval(iv);
+        const s = $('#s' + i);
+        s.textContent = isSched ? '✓ Scheduled' : (j.p.man ? '✓ Ready to share' : '✓ Published');
+        s.style.color = 'var(--ok)';
+        if (++done === jobs.length) finishPublish(pls, isSched);
+      }
+      $('#b' + i).style.width = w + '%';
+    }, 200 + Math.random() * 150);
+  });
+};
+
+function finishPublish(pls, isSched) {
+  const items = [media.post.length && (media.post.length > 1 ? 'Carousel (' + media.post.length + ' photos)' : 'Photo Post'), media.reel && 'Reel Video'].filter(Boolean).join(' + ');
+  posts.unshift({
+    id: Date.now(),
+    cap: $('#cap').value.slice(0, 150),
+    items,
+    pl: pls.map(p => p.id),
+    at: isSched ? new Date($('#dt').value).toISOString() : new Date().toISOString(),
+    status: isSched ? 'scheduled' : 'published',
+    by: userEmail
+  });
+
+  save();
+  busy = false;
+  $('#go').disabled = false;
+  toast(isSched ? 'Post scheduled successfully ✓' : 'Published across ' + pls.length + ' channels ✓');
+
+  if (pls.some(p => p.man)) {
+    $('#waArea').innerHTML = `
+      <button class="btn wa" style="width:100%;margin-top:12px" id="shwa">📤 Share to WhatsApp Channel</button>
+      <small style="color:var(--mut);display:block;margin-top:4px">Opens WhatsApp so you can post with one tap.</small>
+    `;
+  }
+  render();
+}
+
+// Share to WhatsApp
+document.addEventListener('click', async e => {
+  if (!e.target.closest('#shwa')) return;
+  const files = [...media.post.map(m => m.file), media.reel && media.reel.file].filter(Boolean);
+  const text = $('#cap').value;
+  try {
+    if (navigator.canShare && navigator.canShare({ files })) {
+      await navigator.share({ files, text });
+      return;
+    }
+  } catch (x) {
+    if (x.name === 'AbortError') return;
+  }
+  window.open('https://wa.me/?text=' + encodeURIComponent(text || 'New post'), '_blank');
+  toast('Attach your media in WhatsApp');
+});
+
+// Drafts
+$('#dr').onclick = () => {
+  if (!media.post.length && !media.reel && !$('#cap').value.trim()) return toast('Nothing to save in draft');
+  const pls = P.filter(p => acc[p.id] && sel[p.id]);
+  if (sb) {
+    cloudPublish(pls, when === 'later', true);
+    return;
+  }
+  posts.unshift({
+    id: Date.now(),
+    cap: $('#cap').value.slice(0, 150),
+    items: [media.post.length ? 'Photos' : '', media.reel ? 'Reel' : ''].filter(Boolean).join(' + ') || 'Text Draft',
+    pl: pls.map(p => p.id),
+    at: new Date().toISOString(),
+    status: 'draft',
+    by: userEmail
+  });
+  save();
+  render();
+  toast('Draft saved securely ✓');
+};
+
+$('#clr').onclick = () => {
+  media.post.forEach(m => URL.revokeObjectURL(m.url));
+  if (media.reel) URL.revokeObjectURL(media.reel.url);
+  media = { post: [], reel: null };
+  setCover(null);
+  $('#cap').value = '';
+  $('#charCount').textContent = '0 / 2,200 (IG)';
+  $('#jobsc').style.display = 'none';
+  drawMediaList();
+  updatePreviews();
+  toast('Cleared editor');
+};
+
+/* =======================================================
+   RENDERING & VIEWS
+   ======================================================= */
+function render() {
+  // Update sidebar profile
+  $('#uEmail').textContent = userEmail;
+  $('#uRole').textContent = userRole.toUpperCase();
+  $('#uRole').className = 'u-role ' + userRole;
+  $('#uAv').textContent = (userEmail[0] || 'A').toUpperCase();
+  $('#nadm').style.display = userRole === 'admin' ? '' : 'none';
+
+  // Accounts selector bar
+  const selectedPlats = P.filter(p => acc[p.id] && sel[p.id]);
+  $('#ptx').textContent = selectedPlats.length ? selectedPlats.map(p => p.n).join(', ') : 'Select destination platforms';
+  $('#pav').innerHTML = selectedPlats.map(p => dot(p, 1)).join('');
+  $('#accCount').textContent = `${selectedPlats.length} selected`;
+
+  // Grid of platforms
+  $('#plats').innerHTML = P.map(p => `
+    <div class="pl ${acc[p.id] ? '' : 'off'} ${sel[p.id] && acc[p.id] ? 'sel' : ''}" data-p="${p.id}">
+      ${dot(p)}
+      <div>
+        <b>${p.n}</b>
+        <small>${acc[p.id] ? esc(acc[p.id]) : 'Not linked'}</small>
+      </div>
+    </div>
+  `).join('');
+
+  // Linked accounts view
+  $('#accs').innerHTML = P.map(p => `
+    <div class="card" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      ${dot(p)}
+      <div style="flex:1;min-width:160px">
+        <b style="font-size:14.5px">${p.n}</b>
+        <small style="display:block;color:var(--mut);margin-top:2px">
+          ${acc[p.id] ? 'Connected as ' + esc(acc[p.id]) + ' · Graph API Active' : p.s}
+        </small>
+      </div>
+      ${userRole !== 'admin' ? `
+        <span class="badge ${acc[p.id] ? '' : 'w'}">${acc[p.id] ? 'Active' : 'Unlinked'}</span>
+      ` : acc[p.id] ? `
+        <span class="badge">Active &amp; Verified</span>
+        <button class="btn sm g" data-d="${p.id}">Disconnect</button>
+      ` : `
+        <button class="btn sm" data-c="${p.id}">Connect Channel</button>
+      `}
+    </div>
+  `).join('');
+
+  // Activity stats
+  const sc = posts.filter(p => p.status === 'scheduled');
+  const pb = posts.filter(p => ['published','publishing'].includes(p.status));
+  const pend = posts.filter(p => p.status === 'pending');
+  const failed = posts.filter(p => p.status === 'failed');
+
+  $('#stats').innerHTML = `
+    <div class="stat"><b>${pb.length}</b><span>Published</span></div>
+    <div class="stat"><b>${sc.length}</b><span>Scheduled</span></div>
+    <div class="stat"><b>${pend.length}</b><span>Needs Approval</span></div>
+    <div class="stat"><b>${Object.keys(acc).length}</b><span>Linked Channels</span></div>
+  `;
+
+  // Activity history
+  const histFilter = ($('#actSearch')?.value || '').toLowerCase();
+  const histItems = posts.filter(p => !histFilter || (p.cap || '').toLowerCase().includes(histFilter));
+  $('#hist').innerHTML = histItems.length ? histItems.map(row).join('') : '<div style="color:var(--mut);text-align:center;padding:30px">No activity records found.</div>';
+
+  // Calendar
+  renderCalendar();
+}
+
+const STATUS_LABELS = {
+  published: 'Published',
+  failed: 'Failed',
+  publishing: 'Publishing…',
+  pending: 'Awaiting Approval',
+  draft: 'Draft',
+  scheduled: 'Scheduled'
+};
+
+function actions(h) {
+  const isAdmin = userRole === 'admin';
+  if (h.status === 'pending') {
+    return isAdmin ? `
+      <button class="btn sm" data-ok="${h.id}">Approve &amp; Publish</button>
+      <button class="btn sm g danger" data-del="${h.id}">✕ Reject</button>
+    ` : '<span class="badge w">Under Review</span>';
+  }
+  if (h.status === 'draft') {
+    return `
+      <button class="btn sm" data-now="${h.id}">${isAdmin ? 'Publish Now' : 'Submit for Review'}</button>
+      <button class="btn sm g" data-del="${h.id}">✕</button>
+    `;
+  }
+  if (h.status === 'scheduled') {
+    return isAdmin ? `
+      <button class="btn sm" data-now="${h.id}">Publish Now</button>
+      <button class="btn sm g" data-del="${h.id}">✕</button>
+    ` : '';
+  }
+  return '';
+}
+
+function row(h) {
+  const isBad = h.status === 'failed';
+  const isWarn = h.status === 'pending' || h.status === 'publishing' || h.status === 'draft';
+  const badgeCls = isBad ? 'err' : isWarn ? 'w' : '';
+
+  return `
+    <div class="item">
+      <div class="c">
+        <p>${esc(h.cap || '(no caption text)')}</p>
+        <small>${h.items || 'Post'} · ${fmt(h.at)} ${h.by ? '· by ' + esc(h.by) : ''} ${h.err ? `· <span style="color:var(--err)">${esc(h.err)}</span>` : ''}</small>
+        <div class="pls">${(h.pl || []).map(i => dot(P.find(p => p.id === i), 1)).join('')}</div>
+      </div>
+      <span class="badge ${badgeCls}">${STATUS_LABELS[h.status] || 'Published'}</span>
+      ${actions(h)}
+    </div>
+  `;
+}
+
+// Calendar rendering
+function renderCalendar() {
+  const y = cm.getFullYear(), m = cm.getMonth();
+  const f = new Date(y, m, 1).getDay();
+  const dim = new Date(y, m + 1, 0).getDate();
+  const sc = posts.filter(p => p.status === 'scheduled' || p.status === 'pending');
+
+  $('#mn').textContent = cm.toLocaleString([], { month: 'long', year: 'numeric' });
+  let h = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d => `<div class="dh">${d}</div>`).join('') + '<div></div>'.repeat(f);
+
+  for (let d = 1; d <= dim; d++) {
+    const k = y + '-' + (m + 1) + '-' + d;
+    const n = sc.filter(p => key(new Date(p.at)) === k).length;
+    h += `<button class="day ${k === selDay ? 'on' : ''} ${k === key(new Date()) ? 'today' : ''}" data-day="${k}">${d}${n ? `<i>${n}</i>` : ''}</button>`;
+  }
+  $('#cal').innerHTML = h;
+
+  const calFilter = ($('#calSearch')?.value || '').toLowerCase();
+  const platFilter = $('#calFilterPlat')?.value || '';
+
+  const queueList = posts
+    .filter(p => ['scheduled','pending','draft'].includes(p.status))
+    .filter(p => !selDay || key(new Date(p.at)) === selDay)
+    .filter(p => !calFilter || (p.cap || '').toLowerCase().includes(calFilter))
+    .filter(p => !platFilter || (p.pl || []).includes(platFilter))
+    .sort((a, b) => new Date(a.at) - new Date(b.at));
+
+  $('#qd').textContent = selDay ? `Filtered for ${selDay}` : 'All upcoming posts';
+  $('#q').innerHTML = queueList.length ? queueList.map(row).join('') : '<div style="color:var(--mut);text-align:center;padding:24px">No posts queued here.</div>';
+}
+
+$('#pm').onclick = () => { cm = new Date(cm.getFullYear(), cm.getMonth() - 1, 1); renderCalendar(); };
+$('#nm').onclick = () => { cm = new Date(cm.getFullYear(), cm.getMonth() + 1, 1); renderCalendar(); };
+$('#calSearch').oninput = renderCalendar;
+$('#calFilterPlat').onchange = renderCalendar;
+$('#actSearch').oninput = render;
+
+document.addEventListener('click', e => {
+  const d = e.target.closest('[data-day]');
+  if (d) {
+    selDay = selDay === d.dataset.day ? null : d.dataset.day;
+    renderCalendar();
+  }
+  // Approve
+  const ok = e.target.closest('[data-ok]');
+  if (ok) {
+    if (userRole !== 'admin') return toast('Admins only');
+    const p = posts.find(x => x.id == ok.dataset.ok);
+    if (p) {
+      p.status = 'scheduled';
+      save();
+      render();
+      toast('Approved for publishing ✓');
+      if (sb) sb.from('posts').update({ status: 'scheduled' }).eq('id', ok.dataset.ok).then(() => sb.functions.invoke('publisher'));
+    }
+  }
+  // Publish now from list
+  const n = e.target.closest('[data-now]');
+  if (n) {
+    const p = posts.find(x => x.id == n.dataset.now);
+    if (p) {
+      if (userRole === 'admin') {
+        p.status = 'published';
+        p.at = new Date().toISOString();
+        save();
+        render();
+        toast('Published immediately ✓');
+        if (sb) sb.from('posts').update({ status: 'scheduled', scheduled_at: new Date().toISOString() }).eq('id', n.dataset.now).then(() => sb.functions.invoke('publisher'));
+      } else {
+        p.status = 'pending';
+        save();
+        render();
+        toast('Submitted to admin for approval ✓');
+        if (sb) sb.from('posts').update({ status: 'pending' }).eq('id', n.dataset.now);
+      }
+    }
+  }
+  // Delete
+  const del = e.target.closest('[data-del]');
+  if (del) {
+    if (confirm('Delete this post?')) {
+      posts = posts.filter(p => p.id != del.dataset.del);
+      save();
+      render();
+      if (sb) sb.from('posts').delete().eq('id', del.dataset.del);
+      toast('Post removed');
+    }
+  }
+});
+
+/* =======================================================
+   ACCOUNTS MODAL & CREDENTIAL PROTECTION
+   ======================================================= */
+function openAccountModal(id) {
+  cur = id;
+  const p = P.find(x => x.id === id);
+  $('#mt').textContent = 'Connect ' + p.n;
+  $('#mh').value = acc[id] || '';
+  
+  const isMeta = id === 'ig' || id === 'fb';
+  $('#tokenFields').style.display = isMeta ? 'block' : 'none';
+  $('#mtk').value = '';
+  $('#mid').value = '';
+  $('#md').classList.add('show');
+  $('#mh').focus();
+}
+
+$('#mc').onclick = () => $('#md').classList.remove('show');
+$('#mCancel').onclick = () => $('#md').classList.remove('show');
+
+$('#tkToggle').onclick = () => {
+  const inp = $('#mtk');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+};
+
+$('#mo').onclick = async () => {
+  let h = $('#mh').value.trim() || '@kcal_official';
+  if (cur === 'wa') {
+    if (!/^[@\w]/.test(h)) h = 'KCAL Channel';
+  } else if (h[0] !== '@') h = '@' + h;
+
+  if (sb) {
+    const tk = $('#mtk').value.trim(), mid = $('#mid').value.trim();
+    if ((cur === 'ig' || cur === 'fb') && (!tk || !mid)) {
+      return toast('Meta Graph API Token and ID are required');
+    }
+    const ok = await adm({ action: 'saveAccount', platform: cur, handle: h, token: tk || null, ext_id: mid || null });
+    if (!ok) return;
+  }
+
+  acc[cur] = h;
+  sel[cur] = true;
+  save();
+  $('#md').classList.remove('show');
+  render();
+  toast('Connected ' + h + ' securely ✓');
+};
+
+/* =======================================================
+   ADMIN LOGIN & AUTH SYSTEM
+   ======================================================= */
+$('#adminLockBtn').onclick = () => $('#lg').classList.add('show');
+$('#lgClose').onclick = () => $('#lg').classList.remove('show');
+$('#lpToggle').onclick = () => {
+  const inp = $('#lp');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+};
+
+$('#lin').onclick = async () => {
+  const email = $('#le').value.trim();
+  const password = $('#lp').value;
+
+  if (!email) return toast('Please enter your work email');
+  if (!password) return toast('Please enter password or master PIN');
+
+  if (sb) {
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+    if (error) return toast(error.message);
+    $('#lg').classList.remove('show');
+    toast('Signed in successfully ✓');
+    return;
+  }
+
+  // Standalone mode authentication
+  if (email.toLowerCase().includes('editor')) {
+    userEmail = email;
+    userRole = 'editor';
+    toast('Signed in as Editor (Restricted Mode)');
+  } else {
+    userEmail = email;
+    userRole = 'admin';
+    toast('Signed in as Administrator (Full Access)');
+  }
+  $('#lg').classList.remove('show');
+  render();
+};
+
+/* =======================================================
+   SUPABASE CLOUD SYNC & TEAM MANAGEMENT
+   ======================================================= */
+const CFG = window.PS_CONFIG || {};
+let sb = (CFG.url && CFG.key && window.supabase) ? window.supabase.createClient(CFG.url, CFG.key) : null;
+let uid = null, ch = null;
+
+async function adm(body) {
+  if (!sb) return true;
+  const { data, error } = await sb.functions.invoke('admin', { body });
+  if (error) {
+    let m = error.message;
+    try { m = (await error.context.json()).error || m; } catch (e) {}
+    toast(m);
+    return false;
+  }
+  if (data && data.error) {
+    toast(data.error);
+    return false;
+  }
+  return true;
+}
+
+async function loadAdmin() {
+  if (userRole !== 'admin') return;
+  if (!sb) {
+    // Standalone demo admin view
+    $('#team').innerHTML = `
+      <div class="item">
+        <div class="c"><p>admin@kcal.local</p><small>Primary Administrator · Active</small></div>
+        <span class="badge">Admin</span>
+      </div>
+      <div class="item">
+        <div class="c"><p>editor@kcal.local</p><small>Content Creator · Active</small></div>
+        <span class="badge w">Editor</span>
+      </div>
+    `;
+    $('#audit').innerHTML = `
+      <div class="item">
+        <div class="c"><p>Login</p><small>admin@kcal.local · Just now</small></div>
+      </div>
+      <div class="item">
+        <div class="c"><p>Published post to Instagram &amp; Facebook</p><small>admin@kcal.local · Today 7:00 PM</small></div>
+      </div>
+    `;
+    return;
+  }
+
+  const [t, a] = await Promise.all([
+    sb.from('profiles').select('*').order('created_at'),
+    sb.from('audit_log').select('*').order('at', { ascending: false }).limit(50)
+  ]);
+
+  $('#team').innerHTML = (t.data || []).map(u => `
+    <div class="item">
+      <div class="c"><p>${esc(u.email)}</p><small>${u.active ? 'Active' : 'Disabled'}</small></div>
+      <select data-role="${u.user_id}" style="width:auto;padding:6px 10px;font-size:12px">
+        <option value="editor" ${u.role === 'editor' ? 'selected' : ''}>Editor</option>
+        <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin</option>
+      </select>
+      <button class="btn sm g" data-act="${u.user_id}" data-on="${u.active ? 0 : 1}">
+        ${u.active ? 'Disable' : 'Enable'}
+      </button>
+    </div>
+  `).join('');
+
+  $('#audit').innerHTML = (a.data || []).map(l => `
+    <div class="item">
+      <div class="c"><p>${esc(l.action)} ${l.detail ? '· ' + esc(l.detail) : ''}</p><small>${esc(l.email || 'system')} · ${fmt(l.at)}</small></div>
+    </div>
+  `).join('') || '<div style="color:var(--mut);text-align:center;padding:20px">No security events recorded.</div>';
+}
+
+$('#iv').onclick = async () => {
+  const em = $('#ie').value.trim();
+  if (!em) return toast('Please enter an email address');
+  if (await adm({ action: 'invite', email: em, role: $('#ir').value })) {
+    toast('Invitation sent to ' + em + ' ✓');
+    $('#ie').value = '';
+    loadAdmin();
+  }
+};
+
+async function cloudPublish(pls, isSched, draft) {
+  const st = (t, c) => $$('#jobs span[id^="s"]').forEach(e => { e.textContent = t; e.style.color = c; });
+  const bars = w => $$('#jobs div[id^="b"]').forEach(b => b.style.width = w + '%');
+  const status = draft ? 'draft' : (userRole === 'admin' ? 'scheduled' : 'pending');
+
+  busy = true;
+  $('#go').disabled = true;
+  $('#dr').disabled = true;
+
+  try {
+    const id = crypto.randomUUID(), base = uid + '/' + id + '/';
+    const up = async (f, n) => {
+      const path = base + n + '-' + f.name.replace(/[^\w.-]/g, '_');
+      const { error } = await sb.storage.from('media').upload(path, f, { contentType: f.type });
+      if (error) throw error;
+      return sb.storage.from('media').getPublicUrl(path).data.publicUrl;
+    };
+
+    const med = { post: [] };
+    for (const m of media.post) {
+      med.post.push(await up(m.file, 'p'));
+      bars(40);
+    }
+    if (media.reel) {
+      med.reel = await up(media.reel.file, 'r');
+      bars(70);
+    }
+    if (cover) {
+      med.cover = await up(new File([cover.blob], 'cover.jpg', { type: 'image/jpeg' }), 'c');
+    }
+
+    const { error } = await sb.from('posts').insert({
+      id,
+      caption: $('#cap').value,
+      items: [media.post.length && 'Photos', media.reel && 'Reel'].filter(Boolean).join(' + ') || 'Post',
+      platforms: pls.map(p => p.id),
+      media: med,
+      status,
+      scheduled_at: isSched ? new Date($('#dt').value).toISOString() : new Date().toISOString()
+    });
+
+    if (error) throw error;
+    bars(100);
+    st(status === 'pending' ? '✓ Sent for Admin Approval' : status === 'draft' ? '✓ Saved' : isSched ? '✓ Scheduled' : '✓ Queued', 'var(--ok)');
+
+    if (status === 'scheduled' && !isSched) sb.functions.invoke('publisher');
+    toast(status === 'pending' ? 'Submitted for approval ✓' : isSched ? 'Scheduled ✓' : 'Sent to publisher ✓');
+  } catch (e) {
+    st('✗ Failed', 'var(--err)');
+    toast(e.message || 'Publishing error');
+  }
+  busy = false;
+  $('#go').disabled = false;
+  $('#dr').disabled = false;
+}
+
+function cloudInit() {
+  if (!sb) {
+    $('#syncStatus').textContent = 'Local Standalone Mode';
+    return;
+  }
+  $('#syncStatus').textContent = 'Supabase Cloud Connected';
+  sb.auth.onAuthStateChange((ev, ses) => {
+    setTimeout(async () => {
+      if (!ses) {
+        uid = null;
+        userRole = 'editor';
+        userEmail = 'Not signed in';
+        render();
+        $('#lg').classList.add('show');
+        return;
+      }
+      uid = ses.user.id;
+      userEmail = ses.user.email;
+      $('#lg').classList.remove('show');
+
+      const { data: me } = await sb.from('profiles').select('role,active').eq('user_id', uid).maybeSingle();
+      if (!me || !me.active) {
+        toast('Access restricted. Please contact an administrator.');
+        sb.auth.signOut();
+        return;
+      }
+      userRole = me.role;
+      goLabel();
+      render();
+    }, 0);
+  });
+}
+
+// Tick for local schedule simulation
+setInterval(() => {
+  if (sb) return;
+  let count = 0;
+  posts.forEach(p => {
+    if (p.status === 'scheduled' && new Date(p.at) <= new Date()) {
+      p.status = 'published';
+      count++;
+    }
+  });
+  if (count) {
+    save();
+    render();
+    toast(count + ' scheduled post(s) published ✓');
+  }
+}, 15000);
+
+// Init
+goLabel();
+drawMediaList();
+updatePreviews();
+render();
+cloudInit();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}));
+}
+</script>
+</body>
+</html>
