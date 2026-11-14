@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>KCAL PostSync · Authenticating…</title>
+<style>
+body {
+  margin: 0; background: #08170f; color: #f7f9f4;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  display: grid; place-items: center; min-height: 100vh; text-align: center;
+}
+.box {
+  background: #112f20; padding: 28px 36px; border-radius: 16px; border: 1px solid #1a4730;
+}
+.spin {
+  width: 32px; height: 32px; border: 3px solid #dfbf3822; border-top-color: #dfbf38;
+  border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="spin"></div>
+  <h3 style="margin: 0 0 6px">Authenticating with KCAL Sync…</h3>
+  <p style="margin: 0; font-size: 13px; color: #92a897">Completing secure channel handshake. This window will close automatically.</p>
+</div>
+<script>
+(function() {
+  const hash = window.location.hash || '';
+  const search = window.location.search || '';
+  if (window.opener) {
+    window.opener.postMessage({
+      type: 'postsync_oauth_callback',
+      hash: hash,
+      search: search
+    }, window.location.origin);
+    setTimeout(() => window.close(), 600);
+  } else {
+    document.querySelector('p').textContent = 'Authentication complete. You can close this window.';
+  }
+})();
+</script>
+</body>
+</html>
