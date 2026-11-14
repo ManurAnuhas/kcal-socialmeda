@@ -1057,31 +1057,41 @@ textarea{min-height:115px;resize:vertical;line-height:1.45}
 
       <!-- FB / IG: Real OAuth popup -->
       <div id="oauthMeta" style="display:none">
-        <div class="oauth-direct-box">
-          <div class="oauth-badge">✓ Recommended &amp; Official</div>
-          <h4 style="margin:0 0 6px;font-size:14px" id="oauthTitle">Direct Facebook Page Login</h4>
-          <p class="sub" style="font-size:12px;margin-bottom:14px">Log in directly with your account credentials. Securely syncs page handle and posting token automatically.</p>
-          <button class="btn fb" id="btnOAuthAction" style="width:100%;padding:12px">
-            <span id="btnOAuthText">📘 Log in with Facebook Page</span>
-          </button>
-          <div id="quickAppIdBox" style="display:none;margin-top:12px;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px">
-            <small style="color:var(--mut);display:block;margin-bottom:6px;font-weight:750">Meta App ID required for live OAuth popup:</small>
-            <div style="display:flex;gap:6px">
-              <input type="text" id="quickAppIdInput" placeholder="Paste Meta App ID" style="padding:8px 10px;font-size:12px">
-              <button class="btn sm" id="btnSaveQuickAppId">Save &amp; Open</button>
-            </div>
-            <small style="color:var(--mut);display:block;margin-top:6px;font-size:10.5px">Once authorized, your Page token is permanent and never expires.</small>
+
+        <!-- State A: App ID NOT configured yet -->
+        <div id="metaSetupNeeded" style="display:none">
+          <div style="text-align:center;padding:24px 16px">
+            <div style="width:52px;height:52px;border-radius:14px;background:#1877f222;border:1.5px solid #1877f244;display:grid;place-items:center;font-size:24px;margin:0 auto 14px">🔑</div>
+            <h4 style="margin:0 0 8px;font-size:14px">One-Time Setup Required</h4>
+            <p class="sub" style="font-size:12px;margin-bottom:16px;line-height:1.6">To enable direct Facebook login, your Admin needs to add the <b>Meta App ID</b> once in Admin Settings. After that, all logins are one-click — forever.</p>
+            <button class="btn" id="btnGoAdminForMeta" style="width:100%;padding:11px;margin-bottom:10px">
+              ⚙️ Go to Admin Settings → Set Meta App ID
+            </button>
+            <small style="color:var(--mut);font-size:11px">This is a one-time setup. You will never need to enter an App ID again.</small>
           </div>
         </div>
-        <!-- Live Page Detection Confirmation -->
-        <div id="oauthPageSelector" style="display:none;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:12px">
-          <strong style="font-size:12px;display:block;margin-bottom:8px">✅ Facebook Page Detected — Select to Link:</strong>
-          <div id="oauthPageList" style="max-height:160px;overflow-y:auto"></div>
-          <button class="btn sm" id="btnConfirmOAuthPage" style="width:100%;margin-top:8px">✓ Confirm &amp; Link This Page</button>
+
+        <!-- State B: App ID configured — clean login button -->
+        <div id="metaLoginReady" style="display:none">
+          <div class="oauth-direct-box">
+            <div class="oauth-badge">✓ Recommended &amp; Official</div>
+            <h4 style="margin:0 0 6px;font-size:14px" id="oauthTitle">Direct Facebook Page Login</h4>
+            <p class="sub" style="font-size:12px;margin-bottom:16px" id="oauthDesc">Log in directly with your Facebook account. Your Pages load automatically — select one to link.</p>
+            <button class="btn fb" id="btnOAuthAction" style="width:100%;padding:14px;font-size:14px;font-weight:700;letter-spacing:-.2px">
+              <span id="btnOAuthText">📘 Log in with Facebook Page</span>
+            </button>
+          </div>
+          <!-- Live Page Detection Confirmation -->
+          <div id="oauthPageSelector" style="display:none;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:12px">
+            <strong style="font-size:12px;display:block;margin-bottom:8px">✅ Select Facebook Page to Link:</strong>
+            <div id="oauthPageList" style="max-height:180px;overflow-y:auto"></div>
+            <button class="btn sm" id="btnConfirmOAuthPage" style="width:100%;margin-top:8px">✓ Confirm &amp; Link This Page</button>
+          </div>
+          <div style="text-align:center;margin-top:10px">
+            <small style="color:var(--mut);font-size:11px" id="oauthPermsNote">Permissions: pages_show_list, pages_manage_posts, instagram_content_publish</small>
+          </div>
         </div>
-        <div style="text-align:center;margin-top:8px">
-          <small style="color:var(--mut);font-size:11px" id="oauthPermsNote">Permissions requested: pages_manage_posts, instagram_content_publish.</small>
-        </div>
+
       </div>
 
       <!-- TikTok: Manual guide (OAuth code flow needs backend) -->
@@ -1151,8 +1161,8 @@ textarea{min-height:115px;resize:vertical;line-height:1.45}
               </div>
             </div>
           </div>
-          <button class="btn wa" id="btnOAuthAction" style="width:100%;padding:12px">
-            <span id="btnOAuthText">💬 Link WhatsApp Channel Instantly</span>
+          <button class="btn wa" id="btnWaLink" style="width:100%;padding:12px">
+            💬 Link WhatsApp Channel Instantly
           </button>
         </div>
       </div>
@@ -1480,7 +1490,11 @@ $('#btnSaveAppKeys').onclick = () => {
   apiConfigs.tiktok_key = $('#cfgTikTokKey').value.trim();
   try {
     localStorage.setItem('ps_api_configs', JSON.stringify(apiConfigs));
-    toast('Social OAuth App IDs saved securely ✓');
+    const msgs = [];
+    if (apiConfigs.fb_app_id) msgs.push('Meta App ID ✓');
+    if (apiConfigs.google_client_id) msgs.push('Google Client ID ✓');
+    if (apiConfigs.tiktok_key) msgs.push('TikTok Key ✓');
+    toast('OAuth keys saved: ' + (msgs.join(', ') || 'none entered'));
   } catch (e) {}
 };
 
@@ -1519,17 +1533,27 @@ function openAccountModal(id) {
   // Show correct section based on platform
   const tabBar = $('#modalTabBar');
   if (id === 'fb' || id === 'ig') {
-    // Meta: Real OAuth popup
+    // Meta: Real OAuth popup — show correct state
     $('#oauthMeta').style.display = 'block';
     if (tabBar) tabBar.style.display = 'flex';
-    $('#oauthTitle').textContent = 'Direct ' + p.n + ' Login';
-    const btn = $('#btnOAuthAction');
-    btn.className = 'btn ' + (p.btnClass || 'fb');
-    btn.disabled = false;
-    btn.innerHTML = '<span id="btnOAuthText">' + esc(p.btnText) + '</span>';
-    $('#oauthPermsNote').textContent = id === 'ig'
-      ? 'Permissions: instagram_basic, instagram_content_publish, pages_manage_posts'
-      : 'Permissions: pages_show_list, pages_manage_posts, instagram_content_publish';
+    const hasAppId = !!(apiConfigs.fb_app_id && apiConfigs.fb_app_id.trim());
+    $('#metaSetupNeeded').style.display = hasAppId ? 'none' : 'block';
+    $('#metaLoginReady').style.display = hasAppId ? 'block' : 'none';
+    if (hasAppId) {
+      const title = id === 'ig' ? 'Direct Instagram Business Login' : 'Direct Facebook Page Login';
+      const desc = id === 'ig'
+        ? 'Log in with Facebook — your linked Instagram Business Account is detected automatically.'
+        : 'Log in with your Facebook account. All your Pages load instantly — just select one to link.';
+      $('#oauthTitle').textContent = title;
+      $('#oauthDesc').textContent = desc;
+      const btn = $('#btnOAuthAction');
+      btn.className = 'btn ' + (p.btnClass || 'fb');
+      btn.disabled = false;
+      btn.innerHTML = '<span id="btnOAuthText">' + esc(p.btnText) + '</span>';
+      $('#oauthPermsNote').textContent = id === 'ig'
+        ? 'Permissions: instagram_basic, instagram_content_publish, pages_manage_posts'
+        : 'Permissions: pages_show_list, pages_manage_posts, instagram_content_publish';
+    }
   } else if (id === 'tt') {
     // TikTok: Show guide, default to OAuth tab (shows guide)
     $('#oauthTikTok').style.display = 'block';
@@ -1591,6 +1615,9 @@ function closeAccountModal() {
   // Reset tab bar visibility
   const tabBar = $('#modalTabBar');
   if (tabBar) tabBar.style.display = 'flex';
+  // Hide both meta states
+  const msn = $('#metaSetupNeeded'); if (msn) msn.style.display = 'none';
+  const mlr = $('#metaLoginReady'); if (mlr) mlr.style.display = 'none';
 }
 $('#mc').onclick = closeAccountModal;
 $('#mCancel').onclick = closeAccountModal;
@@ -1623,16 +1650,36 @@ $('#tkToggle').onclick = () => {
   inp.type = inp.type === 'password' ? 'text' : 'password';
 };
 
-// Quick App ID button
-$('#btnSaveQuickAppId').onclick = () => {
-  const val = $('#quickAppIdInput').value.trim();
-  if (!val) return toast('Please enter a valid Meta App ID');
-  apiConfigs.fb_app_id = val;
-  try { localStorage.setItem('ps_api_configs', JSON.stringify(apiConfigs)); } catch (e) {}
-  $('#quickAppIdBox').style.display = 'none';
-  toast('Meta App ID saved ✓');
-  $('#btnOAuthAction').click();
+// Go to Admin Settings to configure Meta App ID
+$('#btnGoAdminForMeta').onclick = () => {
+  closeAccountModal();
+  // Navigate to Admin Settings section
+  const adminBtn = document.querySelector('nav button[data-v="admin"]');
+  if (adminBtn) adminBtn.click();
+  setTimeout(() => {
+    const cfgEl = $('#cfgMetaAppId');
+    if (cfgEl) {
+      cfgEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      cfgEl.focus();
+      cfgEl.style.outline = '2px solid var(--kcal-gold)';
+      setTimeout(() => cfgEl.style.outline = '', 2500);
+    }
+    toast('Enter your Meta App ID here, then Save OAuth App IDs ✓');
+  }, 300);
 };
+
+// WhatsApp instant link button
+const btnWaLink = $('#btnWaLink');
+if (btnWaLink) {
+  btnWaLink.onclick = () => {
+    acc.wa = 'KCAL Official Channel';
+    sel.wa = true;
+    save();
+    closeAccountModal();
+    render();
+    toast('KCAL WhatsApp Channel linked ✓');
+  };
+}
 
 // 1-Click Direct Login (OAuth) Popup Handler
 // Handles FB, IG (Meta OAuth popup) and WA (instant link)
@@ -1656,11 +1703,12 @@ function doMetaOAuth() {
 
   // Meta (Facebook Page & Instagram Business): Real OAuth popup
   if (cur === 'fb' || cur === 'ig') {
-    const appId = apiConfigs.fb_app_id;
+    const appId = (apiConfigs.fb_app_id || '').trim();
     if (!appId) {
-      $('#quickAppIdBox').style.display = 'block';
-      $('#quickAppIdInput').focus();
-      return toast('Enter your Meta App ID to open the official Facebook popup');
+      closeAccountModal();
+      const adminBtn = document.querySelector('nav button[data-v="admin"]');
+      if (adminBtn) adminBtn.click();
+      return toast('⚙️ Please set your Meta App ID in Admin Settings first');
     }
 
     const redirectUri = window.location.origin + '/oauth.html';
