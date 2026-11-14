@@ -974,27 +974,103 @@ textarea{min-height:115px;resize:vertical;line-height:1.45}
     <!-- Official OAuth App IDs (Permanent Login Popup) -->
     <div class="card">
       <div class="ch">
-        Official Social Media OAuth App Configuration (Permanent Popup Login)
-        <small>Never-Expiring Tokens</small>
+        🔑 Social Media OAuth App Setup
+        <span id="metaAppIdStatus" class="badge" style="background:#fbbf2422;color:var(--warn)">Not Configured</span>
       </div>
-      <p class="sub" style="margin-bottom:14px">
-        Configure your developer App IDs so clicking "Log in" launches the real official login dialog popup. Once connected, Page Access Tokens are saved as <b>Permanent (Never-Expiring)</b> so you never have to log into Facebook again.
+      <p class="sub" style="margin-bottom:16px">
+        Set your developer App IDs here <b>once</b>. After that, clicking "Log in with Facebook" on the Accounts page opens the real Facebook popup directly — no App ID needed ever again.
       </p>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
-        <div>
-          <label style="font-size:11.5px;font-weight:700;color:var(--mut);display:block;margin-bottom:6px">Meta App ID (FB &amp; IG)</label>
-          <input type="text" id="cfgMetaAppId" placeholder="e.g. 108492019482012">
+
+      <!-- Meta App ID — with inline setup guide -->
+      <div style="background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+          <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#1877f2,#0a5ec4);display:grid;place-items:center;font-size:18px;flex:none">📘</div>
+          <div>
+            <b style="font-size:13.5px;display:block">Meta App ID</b>
+            <small style="color:var(--mut)">Facebook Page + Instagram Business login</small>
+          </div>
+          <span id="metaAppIdBadge" class="badge" style="margin-left:auto;background:#fbbf2422;color:var(--warn)">Not set</span>
         </div>
-        <div>
-          <label style="font-size:11.5px;font-weight:700;color:var(--mut);display:block;margin-bottom:6px">Google Client ID (YouTube)</label>
-          <input type="text" id="cfgGoogleClientId" placeholder="e.g. 123...apps.googleusercontent.com">
+
+        <div style="margin-bottom:12px">
+          <label style="font-size:11px;font-weight:700;color:var(--mut);display:block;margin-bottom:5px">Meta App ID</label>
+          <input type="text" id="cfgMetaAppId" placeholder="e.g. 108492019482012" style="font-family:monospace;letter-spacing:.5px">
         </div>
-        <div>
-          <label style="font-size:11.5px;font-weight:700;color:var(--mut);display:block;margin-bottom:6px">TikTok Client Key</label>
-          <input type="text" id="cfgTikTokKey" placeholder="e.g. aw94820184...">
+
+        <!-- Step-by-step guide (collapsible) -->
+        <details style="margin-top:4px">
+          <summary style="cursor:pointer;font-size:12px;font-weight:700;color:var(--acc);user-select:none;list-style:none;display:flex;align-items:center;gap:6px">
+            <span>📋</span> How to get your Meta App ID (step-by-step)
+          </summary>
+          <div style="margin-top:12px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;font-size:12px">
+            <div style="display:grid;gap:10px">
+              <div style="display:flex;gap:10px;align-items:flex-start">
+                <div style="min-width:24px;height:24px;border-radius:8px;background:var(--acc);color:var(--onacc);display:grid;place-items:center;font-size:11px;font-weight:800;flex:none">1</div>
+                <div><b style="display:block">developers.facebook.com ට යන්න</b><span style="color:var(--mut)">Personal Facebook account ලෙස log in කරන්න (KCAL page admin)</span></div>
+              </div>
+              <div style="display:flex;gap:10px;align-items:flex-start">
+                <div style="min-width:24px;height:24px;border-radius:8px;background:var(--acc);color:var(--onacc);display:grid;place-items:center;font-size:11px;font-weight:800;flex:none">2</div>
+                <div><b style="display:block">"My Apps" → "Create App"</b><span style="color:var(--mut)">App Type: <b style="color:var(--ink)">Other</b> → Next. App Name: "KCAL PostSync"</span></div>
+              </div>
+              <div style="display:flex;gap:10px;align-items:flex-start">
+                <div style="min-width:24px;height:24px;border-radius:8px;background:var(--kcal-gold);color:#0d2417;display:grid;place-items:center;font-size:11px;font-weight:800;flex:none">3</div>
+                <div><b style="display:block">App ID copy කරන්න ⭐</b><span style="color:var(--mut)">Dashboard top ලෙස <b style="color:var(--ink)">App ID: 1234567890</b> ලෙස show වෙනවා — copy</span></div>
+              </div>
+              <div style="display:flex;gap:10px;align-items:flex-start">
+                <div style="min-width:24px;height:24px;border-radius:8px;background:var(--acc);color:var(--onacc);display:grid;place-items:center;font-size:11px;font-weight:800;flex:none">4</div>
+                <div><b style="display:block">"Add Product" → "Facebook Login" → "Web"</b><span style="color:var(--mut)">Site URL: <code style="background:var(--bg);padding:1px 5px;border-radius:4px">https://kcal-socialmeda.vercel.app</code></span></div>
+              </div>
+              <div style="display:flex;gap:10px;align-items:flex-start">
+                <div style="min-width:24px;height:24px;border-radius:8px;background:var(--kcal-gold);color:#0d2417;display:grid;place-items:center;font-size:11px;font-weight:800;flex:none">5</div>
+                <div><b style="display:block">Facebook Login → Settings → Redirect URI add ⭐</b>
+                  <div style="background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 10px;margin-top:4px;font-family:monospace;font-size:11px;user-select:all;cursor:text">https://kcal-socialmeda.vercel.app/oauth.html</div>
+                </div>
+              </div>
+              <div style="display:flex;gap:10px;align-items:flex-start">
+                <div style="min-width:24px;height:24px;border-radius:8px;background:var(--acc);color:var(--onacc);display:grid;place-items:center;font-size:11px;font-weight:800;flex:none">6</div>
+                <div><b style="display:block">Settings → Basic → App Domains add</b>
+                  <div style="background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 10px;margin-top:4px;font-family:monospace;font-size:11px;user-select:all;cursor:text">kcal-socialmeda.vercel.app</div>
+                </div>
+              </div>
+              <div style="display:flex;gap:10px;align-items:flex-start">
+                <div style="min-width:24px;height:24px;border-radius:8px;background:var(--ok);color:#0d2417;display:grid;place-items:center;font-size:11px;font-weight:800;flex:none">7</div>
+                <div><b style="display:block">App ID paste කරලා Save කරන්න ✓</b><span style="color:var(--mut)">මෙතන Meta App ID field ට paste → "Save OAuth App IDs" → Done!</span></div>
+              </div>
+            </div>
+            <div style="margin-top:12px;text-align:center">
+              <a href="https://developers.facebook.com/apps" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#1877f2;color:#fff;padding:8px 16px;border-radius:10px;text-decoration:none;font-size:12px;font-weight:700">
+                📘 Open Facebook for Developers ↗
+              </a>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <!-- Google + TikTok (compact) -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+        <div style="background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+            <div style="width:28px;height:28px;border-radius:8px;background:#ff0000;display:grid;place-items:center;font-size:14px;flex:none">▶</div>
+            <div>
+              <b style="font-size:12px;display:block">Google Client ID</b>
+              <small style="color:var(--mut);font-size:10px">YouTube Shorts</small>
+            </div>
+          </div>
+          <input type="text" id="cfgGoogleClientId" placeholder="123...apps.googleusercontent.com" style="font-size:11px">
+        </div>
+        <div style="background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+            <div style="width:28px;height:28px;border-radius:8px;background:#111;display:grid;place-items:center;font-size:14px;flex:none">🎵</div>
+            <div>
+              <b style="font-size:12px;display:block">TikTok Client Key</b>
+              <small style="color:var(--mut);font-size:10px">TikTok for Business</small>
+            </div>
+          </div>
+          <input type="text" id="cfgTikTokKey" placeholder="aw94820184..." style="font-size:11px">
         </div>
       </div>
-      <button class="btn sm" id="btnSaveAppKeys">🔑 Save OAuth App IDs</button>
+
+      <button class="btn sm" id="btnSaveAppKeys" style="padding:10px 20px">🔑 Save OAuth App IDs</button>
     </div>
 
     <div class="card">
@@ -1464,6 +1540,21 @@ function loadAdminSettings() {
     $('#cloudStatusBadge').innerHTML = '🟡 Local Device Mode';
     $('#cloudStatusBadge').style.background = '#fbbf2422';
     $('#cloudStatusBadge').style.color = 'var(--warn)';
+  }
+
+  // Update Meta App ID status badges
+  const hasMetaId = !!(apiConfigs.fb_app_id && apiConfigs.fb_app_id.trim());
+  const metaBadge = $('#metaAppIdBadge');
+  const metaStatusBadge = $('#metaAppIdStatus');
+  if (metaBadge) {
+    metaBadge.textContent = hasMetaId ? '✓ Configured' : 'Not set';
+    metaBadge.style.background = hasMetaId ? '#4ade8022' : '#fbbf2422';
+    metaBadge.style.color = hasMetaId ? 'var(--ok)' : 'var(--warn)';
+  }
+  if (metaStatusBadge) {
+    metaStatusBadge.textContent = hasMetaId ? '✓ FB Login Ready' : 'Setup Required';
+    metaStatusBadge.style.background = hasMetaId ? '#4ade8022' : '#fbbf2422';
+    metaStatusBadge.style.color = hasMetaId ? 'var(--ok)' : 'var(--warn)';
   }
 
   $('#audit').innerHTML = `
