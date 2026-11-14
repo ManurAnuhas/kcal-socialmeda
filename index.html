@@ -1818,8 +1818,30 @@ function doMetaOAuth() {
 
   const scope = 'pages_show_list,pages_read_engagement,pages_manage_posts,instagram_basic,instagram_content_publish';
 
+  // Timeout to prevent button staying stuck if popup blocked or fails
+  const resetTimer = setTimeout(() => {
+    if (btn && btn.disabled) {
+      btn.disabled = false;
+      btn.innerHTML = '<span id="btnOAuthText">📘  Continue with Facebook</span>';
+      toast('Login timed out. Please check popup blockers or use Manual Token.');
+    }
+  }, 6000);
+
   // Try FB JS SDK first (cleanest native experience)
   if (window.FB && window._fbReady) {
+    FB.login(function(response) {
+      clearTimeout(resetTimer);
+      if (response && response.authResponse) {
+        const userToken = response.authResponse.accessToken;
+        if (btn) { btn.disabled = false; btn.innerHTML = '<span id="btnOAuthText">📘  Continue with Facebook</span>'; }
+        handleFBToken(userToken);
+      } else {
+        if (btn) { btn.disabled = false; btn.innerHTML = '<span id="btnOAuthText">📘  Continue with Facebook</span>'; }
+        toast('Facebook login cancelled or blocked.');
+      }
+    }, { scope: scope, return_scopes: true });
+    return;
+  }
     FB.login(function(response) {
       if (response.authResponse) {
         const userToken = response.authResponse.accessToken;
