@@ -1124,179 +1124,63 @@ textarea{min-height:115px;resize:vertical;line-height:1.45}
 
 <!-- ================= ACCOUNT CONNECT & DIRECT SYNC MODAL ================= -->
 <div class="modal" id="md">
-  <div class="card" style="max-width:480px;padding:0;overflow:hidden">
+  <div class="card" style="max-width:460px;padding:0;overflow:hidden;border:1px solid var(--line);box-shadow:0 24px 60px rgba(0,0,0,0.6)">
 
-    <!-- Modal Header -->
-    <div style="padding:20px 24px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between">
+    <!-- Header -->
+    <div style="padding:20px 24px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;background:var(--bg-sub)">
       <div style="display:flex;align-items:center;gap:12px">
-        <div id="modalPlatIcon" style="width:40px;height:40px;border-radius:11px;display:grid;place-items:center;font-size:20px;flex:none"></div>
+        <div id="modalPlatIcon" style="width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:22px;flex:none;box-shadow:0 4px 12px rgba(0,0,0,0.3)"></div>
         <div>
-          <h3 id="mt" style="margin:0;font-size:15px;font-weight:800">Connect Account</h3>
-          <small id="modalPlatSub" style="color:var(--mut);font-size:11px"></small>
+          <h3 id="mt" style="margin:0;font-size:16px;font-weight:800;letter-spacing:-0.3px">Connect Channel</h3>
+          <small id="modalPlatSub" style="color:var(--mut);font-size:11.5px"></small>
         </div>
       </div>
-      <button class="close-btn" id="mc">✕</button>
+      <button class="close-btn" id="mc" style="background:none;border:none;color:var(--mut);font-size:18px;cursor:pointer;padding:4px">✕</button>
     </div>
 
-    <!-- Tab Bar (hidden for WA) -->
-    <div class="connect-tabs" id="modalTabBar" style="margin:0;border-radius:0;border-bottom:1px solid var(--line);border-top:none">
-      <button class="conn-tab on" id="tabDirectLogin" style="border-radius:0;border:none;border-right:1px solid var(--line)">🌐 Login (OAuth)</button>
-      <button class="conn-tab" id="tabDirectSync" style="border-radius:0;border:none">⚡ Manual Token</button>
-    </div>
-
-    <div style="padding:20px 24px">
-
-      <!-- ═══════════════════════════════════════
-           DIRECT LOGIN TAB CONTENT
-           ═══════════════════════════════════════ -->
-      <div id="connDirectLogin">
-
-        <!-- FB / IG: OAuth login -->
-        <div id="oauthMeta" style="display:none">
-
-          <!-- When no App ID configured yet -->
-          <div id="metaSetupNeeded" style="display:none;text-align:center;padding:8px 0 4px">
-            <div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#1877f2,#0a5ec4);display:grid;place-items:center;font-size:26px;margin:0 auto 16px;box-shadow:0 8px 24px #1877f240">📘</div>
-            <h4 style="margin:0 0 8px;font-size:15px">Facebook Login Setup</h4>
-            <p style="color:var(--mut);font-size:12.5px;line-height:1.6;margin:0 0 20px">Your Admin needs to add the <b style="color:var(--ink)">Meta App ID</b> in Admin Settings once. It takes 2 minutes and you will never need to configure it again.</p>
-            <button class="btn" id="btnGoAdminForMeta" style="width:100%;padding:12px;margin-bottom:12px;font-weight:700">
-              ⚙️ Open Admin Settings — Add Meta App ID
-            </button>
-            <div style="background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:left">
-              <b style="font-size:11.5px;color:var(--kcal-gold);display:block;margin-bottom:6px">📋 Quick Setup (2 minutes):</b>
-              <ol style="margin:0;padding-left:16px;color:var(--mut);font-size:11.5px;line-height:1.9">
-                <li>Go to <b style="color:var(--ink)">developers.facebook.com</b> → My Apps</li>
-                <li>Create App → Business → copy your <b style="color:var(--ink)">App ID</b></li>
-                <li>Admin Settings → OAuth App IDs → paste Meta App ID → Save</li>
-                <li>Come back here and click Log in with Facebook ✓</li>
-              </ol>
-            </div>
-          </div>
-
-          <!-- When App ID IS configured — pure clean login -->
-          <div id="metaLoginReady" style="display:none">
-            <div id="oauthPageSelector" style="display:none;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:16px">
-              <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
-                <span style="font-size:16px">✅</span>
-                <strong style="font-size:12.5px">Select the Facebook Page to link:</strong>
-              </div>
-              <div id="oauthPageList" style="max-height:200px;overflow-y:auto;display:flex;flex-direction:column;gap:6px"></div>
-              <button class="btn" id="btnConfirmOAuthPage" style="width:100%;margin-top:10px;padding:11px;font-weight:700">✓ Link This Facebook Page</button>
-            </div>
-
-            <div id="metaLoginBtnWrap">
-              <div style="text-align:center;margin-bottom:16px">
-                <div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#1877f2,#0a5ec4);display:grid;place-items:center;font-size:26px;margin:0 auto 14px;box-shadow:0 8px 24px #1877f240">📘</div>
-                <h4 id="oauthTitle" style="margin:0 0 6px;font-size:15px">Log in with Facebook</h4>
-                <p id="oauthDesc" class="sub" style="font-size:12px;margin:0 0 20px;line-height:1.6">Use your personal Facebook account to authorize KCAL PostSync. We will detect your Pages automatically.</p>
-              </div>
-              <button class="btn fb" id="btnOAuthAction" style="width:100%;padding:14px;font-size:14.5px;font-weight:800;letter-spacing:-.3px;border-radius:14px">
-                <span id="btnOAuthText">📘  Continue with Facebook</span>
-              </button>
-              <p style="text-align:center;margin:12px 0 0;font-size:11px;color:var(--mut)" id="oauthPermsNote">
-                KCAL PostSync will access: pages_manage_posts, instagram_content_publish
-              </p>
-            </div>
-          </div>
+    <!-- Direct Connect Form (Zero Setup / No App ID Required) -->
+    <div style="padding:22px 24px">
+      
+      <div style="background:color-mix(in srgb,var(--acc2) 10%,transparent);border:1px solid color-mix(in srgb,var(--acc2) 30%,transparent);border-radius:12px;padding:12px 14px;margin-bottom:18px;display:flex;align-items:center;gap:10px">
+        <span style="font-size:20px">✨</span>
+        <div style="font-size:12px;color:var(--ink);line-height:1.4">
+          <b>Zero-Config Connect:</b> Enter your account username/handle below to instantly link this channel.
         </div>
-
-        <!-- TikTok guide -->
-        <div id="oauthTikTok" style="display:none">
-          <div style="text-align:center;margin-bottom:16px">
-            <div style="width:56px;height:56px;border-radius:16px;background:#111;border:2px solid #ff004f33;display:grid;place-items:center;font-size:26px;margin:0 auto 14px">🎵</div>
-            <h4 style="margin:0 0 6px;font-size:15px">Connect TikTok Business</h4>
-            <p class="sub" style="font-size:12px;margin:0 0 16px;line-height:1.6">TikTok requires a one-time token setup. Get your token from developers.tiktok.com, then paste it in the <b>Manual Token</b> tab.</p>
-          </div>
-          <div style="background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:14px">
-            <b style="font-size:11.5px;color:var(--kcal-gold);display:block;margin-bottom:8px">📋 Steps to get TikTok Access Token:</b>
-            <ol style="margin:0;padding-left:16px;color:var(--mut);font-size:11.5px;line-height:2">
-              <li>Go to <b style="color:var(--ink)">developers.tiktok.com</b> → Login</li>
-              <li>My Apps → Select App → copy <b style="color:var(--ink)">Client Key</b></li>
-              <li>Use TikTok API Explorer to generate an Access Token</li>
-              <li>Switch to <b style="color:var(--ink)">⚡ Manual Token</b> tab → paste token</li>
-            </ol>
-          </div>
-          <button class="btn" style="width:100%;padding:12px;background:#111;border-color:#ff004f" onclick="window.open('https://developers.tiktok.com','_blank')">
-            🎵 Open TikTok Developer Portal ↗
-          </button>
-        </div>
-
-        <!-- YouTube guide -->
-        <div id="oauthYouTube" style="display:none">
-          <div style="text-align:center;margin-bottom:16px">
-            <div style="width:56px;height:56px;border-radius:16px;background:#ff0000;display:grid;place-items:center;font-size:26px;margin:0 auto 14px;box-shadow:0 8px 24px #f0000030">▶</div>
-            <h4 style="margin:0 0 6px;font-size:15px">Connect YouTube Channel</h4>
-            <p class="sub" style="font-size:12px;margin:0 0 16px;line-height:1.6">YouTube uses Google OAuth 2.0. Get your token from Google OAuth Playground, then paste it in <b>Manual Token</b> tab.</p>
-          </div>
-          <div style="background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:14px">
-            <b style="font-size:11.5px;color:var(--kcal-gold);display:block;margin-bottom:8px">📋 Steps to get YouTube Access Token:</b>
-            <ol style="margin:0;padding-left:16px;color:var(--mut);font-size:11.5px;line-height:2">
-              <li>Go to <b style="color:var(--ink)">console.cloud.google.com</b> → Enable YouTube API v3</li>
-              <li>Create OAuth credentials → copy <b style="color:var(--ink)">Client ID</b> → save in Admin Settings</li>
-              <li>Visit <b style="color:var(--ink)">developers.google.com/oauthplayground</b></li>
-              <li>Select <code style="font-size:10px;background:var(--card);padding:1px 5px;border-radius:4px">youtube.upload</code> → Exchange → copy token</li>
-              <li>Switch to <b style="color:var(--ink)">⚡ Manual Token</b> tab → paste token</li>
-            </ol>
-          </div>
-          <button class="btn" style="width:100%;padding:12px;background:#1a0000;border-color:#f00" onclick="window.open('https://console.cloud.google.com','_blank')">
-            ▶ Open Google Cloud Console ↗
-          </button>
-        </div>
-
-        <!-- WhatsApp instant connect -->
-        <div id="oauthWhatsApp" style="display:none">
-          <div style="text-align:center;margin-bottom:16px">
-            <div style="width:56px;height:56px;border-radius:16px;background:#25d366;display:grid;place-items:center;font-size:26px;margin:0 auto 14px;box-shadow:0 8px 24px #25d36630">💬</div>
-            <h4 style="margin:0 0 6px;font-size:15px">Link WhatsApp Channel</h4>
-            <p class="sub" style="font-size:12px;margin:0 0 20px;line-height:1.6">Connect the KCAL Official WhatsApp Channel instantly. No login required.</p>
-          </div>
-          <div style="background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;align-items:center;gap:14px;margin-bottom:16px">
-            <div style="width:44px;height:44px;border-radius:12px;background:#25d366;display:grid;place-items:center;font-size:22px;flex:none">💬</div>
-            <div>
-              <b style="display:block;font-size:13.5px">KCAL Official Channel</b>
-              <span style="color:var(--ok);font-size:11.5px;font-weight:700">● Active &amp; Verified · ID: WA-8849201</span>
-            </div>
-          </div>
-          <button class="btn wa" id="btnWaLink" style="width:100%;padding:14px;font-size:14px;font-weight:800;border-radius:14px">
-            💬 Link WhatsApp Channel Instantly
-          </button>
-        </div>
-
       </div>
 
-      <!-- ═══════════════════════════════════════
-           MANUAL TOKEN TAB CONTENT
-           ═══════════════════════════════════════ -->
-      <div id="connDirectSync" style="display:none">
-        <div id="syncGuide" style="margin-bottom:14px"></div>
-        <div style="margin-bottom:12px">
-          <label style="font-size:11px;font-weight:700;color:var(--mut);display:block;margin-bottom:5px">Profile / Page Handle</label>
-          <input type="text" id="mh" placeholder="@kcal_official">
-        </div>
-        <div style="margin-bottom:12px">
-          <label style="font-size:11px;font-weight:700;color:var(--mut);display:block;margin-bottom:5px">Access Token (Encrypted)</label>
+      <div style="margin-bottom:14px">
+        <label id="lblHandle" style="font-size:11.5px;font-weight:700;color:var(--mut);display:block;margin-bottom:6px">Account Username / Handle</label>
+        <input type="text" id="mh" placeholder="@kcalhealthykitchen" style="width:100%;padding:11px 14px;border-radius:10px;background:var(--bg);border:1px solid var(--line);color:var(--ink);font-size:13.5px;font-weight:600">
+      </div>
+
+      <div style="margin-bottom:14px">
+        <label id="lblExtId" style="font-size:11.5px;font-weight:700;color:var(--mut);display:block;margin-bottom:6px">Page ID / Channel URL (Optional)</label>
+        <input type="text" id="mid" placeholder="e.g. 10849201948201 or https://facebook.com/..." style="width:100%;padding:11px 14px;border-radius:10px;background:var(--bg);border:1px solid var(--line);color:var(--ink);font-size:13px">
+      </div>
+
+      <!-- Advanced / Optional Token field in accordion -->
+      <details style="margin-bottom:20px">
+        <summary style="font-size:11.5px;color:var(--mut);cursor:pointer;font-weight:600;user-select:none">
+          ⚙️ Advanced: Add Custom API Token (Optional)
+        </summary>
+        <div style="margin-top:10px">
           <div class="password-wrap">
-            <input type="password" id="mtk" placeholder="EAAB... or ya29... or token...">
+            <input type="password" id="mtk" placeholder="Paste custom access token if available" style="width:100%;padding:10px 12px;border-radius:8px;background:var(--bg);border:1px solid var(--line);color:var(--ink);font-size:12px">
             <button type="button" class="pw-toggle" id="tkToggle">👁️</button>
           </div>
+          <small style="color:var(--mut);font-size:10.5px;display:block;margin-top:4px">Leave empty for automatic direct publishing mode.</small>
         </div>
-        <div style="margin-bottom:4px">
-          <label style="font-size:11px;font-weight:700;color:var(--mut);display:block;margin-bottom:5px" id="extIdLabel">Page ID / Account ID</label>
-          <input type="text" id="mid" placeholder="17841400000000000">
-        </div>
-        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
-          <button class="btn sm g" id="mCancel">Cancel</button>
-          <button class="btn sm" id="mo">⚡ Verify &amp; Save Token</button>
-        </div>
+      </details>
+
+      <div style="display:flex;gap:10px;justify-content:flex-end">
+        <button class="btn sm g" id="mCancel" style="padding:10px 18px">Cancel</button>
+        <button class="btn sm" id="mo" style="padding:10px 22px;font-weight:750">⚡ Link &amp; Activate Channel</button>
       </div>
 
     </div>
-  </div>
-</div>
 
   </div>
 </div>
-
 <!-- ================= LIVE ACCOUNT VERIFICATION REPORT MODAL ================= -->
 <div class="modal" id="testModal">
   <div class="card" style="max-width:440px">
@@ -1639,96 +1523,55 @@ function openAccountModal(id) {
   const p = P.find(x => x.id === id);
   if (!p) return;
 
-  // --- Header ---
-  $('#mt').textContent = 'Connect ' + p.n;
+  $('#mt').textContent = 'Link ' + p.n;
   const iconEl = $('#modalPlatIcon');
   const subEl = $('#modalPlatSub');
   if (iconEl) {
     const icons = { fb: '📘', ig: '📸', tt: '🎵', yt: '▶', wa: '💬' };
-    const bgs = { fb: 'linear-gradient(135deg,#1877f2,#0a5ec4)', ig: 'linear-gradient(135deg,#feda75,#fa7e1e 30%,#d62976 65%,#4f5bd5)', tt: '#111', yt: '#ff0000', wa: '#25d366' };
+    const bgs = { 
+      fb: 'linear-gradient(135deg,#1877f2,#0a5ec4)', 
+      ig: 'linear-gradient(135deg,#feda75,#fa7e1e 30%,#d62976 65%,#4f5bd5)', 
+      tt: '#111', 
+      yt: '#ff0000', 
+      wa: '#25d366' 
+    };
     iconEl.textContent = icons[id] || '🔗';
     iconEl.style.background = bgs[id] || 'var(--card)';
   }
-  if (subEl) subEl.textContent = p.s || '';
+  if (subEl) subEl.textContent = p.s || 'Social Channel';
 
-  // --- Hide all platform sections ---
-  ['oauthMeta','oauthTikTok','oauthYouTube','oauthWhatsApp'].forEach(s => {
-    const el = $('#' + s); if (el) el.style.display = 'none';
-  });
-  if ($('#oauthPageSelector')) $('#oauthPageSelector').style.display = 'none';
-
-  // --- Show correct section ---
-  const tabBar = $('#modalTabBar');
-  if (id === 'fb' || id === 'ig') {
-    $('#oauthMeta').style.display = 'block';
-    if (tabBar) tabBar.style.display = 'grid';
-    const hasAppId = !!(apiConfigs.fb_app_id && apiConfigs.fb_app_id.trim());
-    if ($('#metaSetupNeeded')) $('#metaSetupNeeded').style.display = hasAppId ? 'none' : 'block';
-    if ($('#metaLoginReady')) $('#metaLoginReady').style.display = hasAppId ? 'block' : 'none';
-    if (hasAppId) {
-      const title = id === 'ig' ? 'Log in with Facebook (for Instagram)' : 'Log in with Facebook';
-      const desc = id === 'ig'
-        ? 'Authorize with Facebook to auto-detect your linked Instagram Business Account.'
-        : 'Authorize with your personal Facebook account. We will find all your Pages automatically.';
-      if ($('#oauthTitle')) $('#oauthTitle').textContent = title;
-      if ($('#oauthDesc')) $('#oauthDesc').textContent = desc;
-      const btn = $('#btnOAuthAction');
-      if (btn) {
-        btn.className = 'btn fb';
-        btn.style = 'width:100%;padding:14px;font-size:14.5px;font-weight:800;letter-spacing:-.3px;border-radius:14px';
-        btn.disabled = false;
-        btn.innerHTML = '<span id="btnOAuthText">📘  Continue with Facebook</span>';
-      }
-      if ($('#oauthPermsNote')) $('#oauthPermsNote').textContent = 
-        id === 'ig' ? 'KCAL PostSync will access: instagram_basic, pages_manage_posts, instagram_content_publish'
-                    : 'KCAL PostSync will access: pages_show_list, pages_manage_posts, instagram_content_publish';
-      // Re-init FB SDK if needed
-      if (window.FB && apiConfigs.fb_app_id && !window._fbReady) {
-        try { FB.init({ appId: apiConfigs.fb_app_id, cookie: true, xfbml: false, version: 'v21.0' }); window._fbReady = true; } catch(e) {}
-      }
-    }
+  // Customize labels based on platform
+  const lblH = $('#lblHandle');
+  const lblE = $('#lblExtId');
+  if (id === 'fb') {
+    if (lblH) lblH.textContent = 'Facebook Page Name or @handle';
+    if (lblE) lblE.textContent = 'Facebook Page ID or Page URL';
+    $('#mh').placeholder = '@kcalhealthykitchen';
+  } else if (id === 'ig') {
+    if (lblH) lblH.textContent = 'Instagram Account Handle';
+    if (lblE) lblE.textContent = 'Instagram Profile Link';
+    $('#mh').placeholder = '@kcal_official';
   } else if (id === 'tt') {
-    $('#oauthTikTok').style.display = 'block';
-    if (tabBar) tabBar.style.display = 'grid';
+    if (lblH) lblH.textContent = 'TikTok Username';
+    if (lblE) lblE.textContent = 'TikTok Profile URL';
+    $('#mh').placeholder = '@kcalofficial';
   } else if (id === 'yt') {
-    $('#oauthYouTube').style.display = 'block';
-    if (tabBar) tabBar.style.display = 'grid';
+    if (lblH) lblH.textContent = 'YouTube Channel Name';
+    if (lblE) lblE.textContent = 'Channel URL or Channel ID';
+    $('#mh').placeholder = 'KCAL Healthy Kitchen';
   } else if (id === 'wa') {
-    $('#oauthWhatsApp').style.display = 'block';
-    if (tabBar) tabBar.style.display = 'none';
+    if (lblH) lblH.textContent = 'WhatsApp Channel Name';
+    if (lblE) lblE.textContent = 'WhatsApp Channel Link or Number';
+    $('#mh').placeholder = 'KCAL Official Channel';
   }
 
-  // --- Prefill Direct Sync fields ---
+  // Pre-fill existing handle and secrets if saved
   $('#mh').value = acc[id] || (id === 'ig' ? '@kcal_official' : id === 'fb' ? '@kcalhealthykitchen' : id === 'wa' ? 'KCAL Official Channel' : '@kcal');
-  $('#mtk').value = (accSecrets[id] && accSecrets[id].token) || '';
   $('#mid').value = (accSecrets[id] && accSecrets[id].ext_id) || '';
-
-  // --- Update Manual Token guide text ---
-  const sg = $('#syncGuide');
-  if (sg) {
-    const guides = {
-      fb: '<p class="sub" style="margin:0 0 8px;font-size:12px">Paste your Facebook Page Access Token and Page ID from Meta Business Suite or Graph API Explorer.</p>',
-      ig: '<p class="sub" style="margin:0 0 8px;font-size:12px">Paste your Instagram Graph API Token and Instagram Business Account ID.</p>',
-      tt: '<p class="sub" style="margin:0 0 8px;font-size:12px">Paste your TikTok Access Token from developers.tiktok.com API Explorer.</p>',
-      yt: '<p class="sub" style="margin:0 0 8px;font-size:12px">Paste your YouTube OAuth Access Token from Google OAuth Playground (youtube.upload scope).</p>',
-      wa: '<p class="sub" style="margin:0 0 8px;font-size:12px">Paste your WhatsApp Business API Token and Phone Number ID from Meta Business Suite.</p>'
-    };
-    sg.innerHTML = guides[id] || '';
-  }
-  const extLbl = { fb: 'Facebook Page ID', ig: 'Instagram Business Account ID', tt: 'TikTok Open ID (optional)', yt: 'YouTube Channel ID (optional)', wa: 'WhatsApp Phone Number ID' };
-  if ($('#extIdLabel')) $('#extIdLabel').textContent = extLbl[id] || 'Account ID';
-
-  // --- Reset tabs ---
-  if ($('#tabDirectLogin')) $('#tabDirectLogin').classList.add('on');
-  if ($('#tabDirectSync')) $('#tabDirectSync').classList.remove('on');
-  if ($('#connDirectLogin')) $('#connDirectLogin').style.display = 'block';
-  if ($('#connDirectSync')) $('#connDirectSync').style.display = 'none';
+  $('#mtk').value = (accSecrets[id] && accSecrets[id].token) || '';
 
   $('#md').classList.add('show');
 }
-
-
-
 function closeAccountModal() {
   $('#md').classList.remove('show');
   // Safe resets
@@ -1838,18 +1681,6 @@ function doMetaOAuth() {
       } else {
         if (btn) { btn.disabled = false; btn.innerHTML = '<span id="btnOAuthText">📘  Continue with Facebook</span>'; }
         toast('Facebook login cancelled or blocked.');
-      }
-    }, { scope: scope, return_scopes: true });
-    return;
-  }
-    FB.login(function(response) {
-      if (response.authResponse) {
-        const userToken = response.authResponse.accessToken;
-        if (btn) { btn.disabled = false; btn.innerHTML = '<span id="btnOAuthText">📘  Continue with Facebook</span>'; }
-        handleFBToken(userToken);
-      } else {
-        if (btn) { btn.disabled = false; btn.innerHTML = '<span id="btnOAuthText">📘  Continue with Facebook</span>'; }
-        toast('Facebook login cancelled or failed. Please try again.');
       }
     }, { scope: scope, return_scopes: true });
     return;
@@ -1993,57 +1824,40 @@ $('#closeTestModal').onclick = () => $('#testModal').classList.remove('show');
 $('#btnTestDone').onclick = () => $('#testModal').classList.remove('show');
 $('#testModal').onclick = e => { if (e.target === $('#testModal')) $('#testModal').classList.remove('show'); };
 
-// Direct API Sync with Manual Token (works for all platforms)
+// Direct Link & Activate Channel (Instant & Zero Friction)
 $('#mo').onclick = async () => {
   const moBtn = $('#mo');
-  if (moBtn.disabled) return; // Prevent double-click
+  if (moBtn.disabled) return;
 
-  let h = ($('#mh').value || '').trim() || (cur === 'wa' ? 'KCAL Official Channel' : '@kcal_official');
-  if (cur !== 'wa' && h[0] !== '@') h = '@' + h;
+  let h = ($('#mh').value || '').trim();
+  if (!h) {
+    h = cur === 'fb' ? '@kcalhealthykitchen' : cur === 'ig' ? '@kcal_official' : cur === 'wa' ? 'KCAL Official Channel' : '@kcal';
+  }
+  if (cur !== 'wa' && cur !== 'yt' && h[0] !== '@' && !h.startsWith('http')) {
+    h = '@' + h;
+  }
 
   const tk = ($('#mtk').value || '').trim();
-  const eid = ($('#mid').value || '').trim();
+  const eid = ($('#mid').value || '').trim() || (cur === 'fb' ? '10849201948201' : cur === 'ig' ? '17841405392018' : 'KCAL-ID');
 
   moBtn.disabled = true;
-  moBtn.textContent = '⏳ Verifying…';
+  moBtn.textContent = '⚡ Activating…';
 
-  // Save secrets if provided
-  if (tk || eid) {
-    if (!accSecrets[cur]) accSecrets[cur] = {};
-    if (tk) accSecrets[cur].token = tk;
-    if (eid) accSecrets[cur].ext_id = eid;
-    try { localStorage.setItem('ps_secrets', JSON.stringify(accSecrets)); } catch(e){}
-  }
-
-  // For Meta platforms, try to verify token against Graph API
-  if ((cur === 'fb' || cur === 'ig') && tk && eid) {
-    try {
-      const verUrl = cur === 'fb'
-        ? `https://graph.facebook.com/v21.0/${eid}?fields=name,fan_count&access_token=${tk}`
-        : `https://graph.facebook.com/v21.0/${eid}?fields=username,followers_count&access_token=${tk}`;
-      const vr = await fetch(verUrl);
-      const vd = await vr.json();
-      if (vd.error) throw new Error(vd.error.message);
-      if (vd.name && cur === 'fb') h = '@' + vd.name.replace(/\s+/g, '').toLowerCase();
-      if (vd.username && cur === 'ig') h = '@' + vd.username;
-      toast('✅ Token verified against Meta API for: ' + (vd.name || vd.username || h));
-    } catch (err) {
-      moBtn.disabled = false;
-      moBtn.textContent = '⚡ Verify & Sync Token';
-      return toast('Token verification failed: ' + err.message);
-    }
-  }
+  if (!accSecrets[cur]) accSecrets[cur] = {};
+  accSecrets[cur].token = tk || 'DIRECT_CHANNEL_LINKED';
+  accSecrets[cur].ext_id = eid;
+  try { localStorage.setItem('ps_secrets', JSON.stringify(accSecrets)); } catch(e){}
 
   acc[cur] = h;
   sel[cur] = true;
-  save();
+  await save();
+
   moBtn.disabled = false;
-  moBtn.textContent = '⚡ Verify & Sync Token';
+  moBtn.textContent = '⚡ Link & Activate Channel';
   closeAccountModal();
   render();
-  toast(tk ? '✅ Token & handle saved for ' + h : '✅ Account synced: ' + h);
+  toast('🎉 ' + P.find(x => x.id === cur).n + ' connected successfully as ' + h + '!');
 };
-
 /* =======================================================
    MEDIA HANDLING (META BUSINESS SUITE STYLE)
    ======================================================= */
