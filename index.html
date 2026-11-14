@@ -1268,16 +1268,16 @@ $('#btnSaveAdminCreds').onclick = () => {
 function openAccountModal(id) {
   cur = id;
   const p = P.find(x => x.id === id);
+  if (!p) return;
   $('#mt').textContent = 'Connect ' + p.n;
   $('#mh').value = acc[id] || (id === 'ig' ? '@kcal_official' : id === 'fb' ? '@kcalhealthykitchen' : '@kcal');
   
-  // Set OAuth button style & text
+  // Set OAuth button style & text safely with reconstructed DOM
   $('#oauthTitle').textContent = 'Direct ' + p.n + ' Login';
-  $('#btnOAuthText').textContent = p.btnText || ('Log in to ' + p.n);
-  $('#btnOAuthAction').className = 'btn ' + (p.btnClass || '');
-  
-  // Re-enable OAuth button (may have been disabled from previous open)
-  $('#btnOAuthAction').disabled = false;
+  const btn = $('#btnOAuthAction');
+  btn.className = 'btn ' + (p.btnClass || '');
+  btn.disabled = false;
+  btn.innerHTML = '<span id="btnOAuthText">' + esc(p.btnText || ('Log in to ' + p.n)) + '</span>';
   
   // Hide page selector (may still be visible from previous open)
   $('#oauthPageSelector').style.display = 'none';
@@ -1298,14 +1298,21 @@ function openAccountModal(id) {
 function closeAccountModal() {
   $('#md').classList.remove('show');
   $('#oauthPageSelector').style.display = 'none';
-  $('#btnOAuthAction').disabled = false;
+  const btn = $('#btnOAuthAction');
+  btn.disabled = false;
   const p = cur ? P.find(x => x.id === cur) : null;
-  if (p) {
-    $('#btnOAuthAction').innerHTML = '<span>' + (p.btnText || 'Log in') + '</span>';
-  }
+  btn.innerHTML = '<span id="btnOAuthText">' + esc(p ? (p.btnText || 'Log in to ' + p.n) : 'Log in') + '</span>';
 }
 $('#mc').onclick = closeAccountModal;
 $('#mCancel').onclick = closeAccountModal;
+$('#md').onclick = e => { if (e.target === $('#md')) closeAccountModal(); };
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeAccountModal();
+    const tm = $('#testModal');
+    if (tm) tm.classList.remove('show');
+  }
+});
 
 $('#tabDirectLogin').onclick = () => {
   $('#tabDirectLogin').classList.add('on');
@@ -1330,14 +1337,15 @@ $('#tkToggle').onclick = () => {
 // 1-Click Direct Login (OAuth) Simulation & Sync
 $('#btnOAuthAction').onclick = async () => {
   const p = P.find(x => x.id === cur);
+  if (!p) return;
   const btn = $('#btnOAuthAction');
   if (btn.disabled) return; // Prevent double-click
   btn.disabled = true;
-  btn.innerHTML = '<span>⏳ Connecting to ' + p.n + ' OAuth…</span>';
+  btn.innerHTML = '<span>⏳ Connecting to ' + esc(p.n) + ' OAuth…</span>';
 
   setTimeout(() => {
     btn.disabled = false;
-    btn.innerHTML = '<span>' + (p.btnText || 'Log in to ' + p.n) + '</span>';
+    btn.innerHTML = '<span id="btnOAuthText">' + esc(p.btnText || 'Log in to ' + p.n) + '</span>';
     
     // Display detected page selector so user sees exact account being connected
     const pName = cur === 'fb' ? 'KCAL · Healthy Food & Kitchen' : cur === 'ig' ? 'KCAL Official (Instagram Business)' : cur === 'wa' ? 'KCAL Official Channel' : 'KCAL Official ' + p.n;
@@ -1358,7 +1366,9 @@ $('#btnConfirmOAuthPage').onclick = () => {
   save();
 
   $('#oauthPageSelector').style.display = 'none';
-  $('#btnOAuthAction').disabled = false;
+  const btn = $('#btnOAuthAction');
+  btn.disabled = false;
+  btn.innerHTML = '<span id="btnOAuthText">' + esc(p ? (p.btnText || 'Log in to ' + p.n) : 'Log in') + '</span>';
   $('#md').classList.remove('show');
   render();
   toast('Verified and connected to ' + $('#detPageName').textContent + ' ✓');
@@ -1397,11 +1407,13 @@ document.addEventListener('click', e => {
       </p>
     `;
     $('#testModal').classList.add('show');
+    return;
   }
 });
 
 $('#closeTestModal').onclick = () => $('#testModal').classList.remove('show');
 $('#btnTestDone').onclick = () => $('#testModal').classList.remove('show');
+$('#testModal').onclick = e => { if (e.target === $('#testModal')) $('#testModal').classList.remove('show'); };
 
 // Direct API Sync with Manual Token
 $('#mo').onclick = async () => {
@@ -1851,7 +1863,10 @@ document.addEventListener('click', e => {
     return;
   }
   const c = e.target.closest('[data-c]');
-  if (c) openAccountModal(c.dataset.c);
+  if (c) {
+    openAccountModal(c.dataset.c);
+    return;
+  }
 
   const disc = e.target.closest('[data-disc]');
   if (disc) {
@@ -1865,6 +1880,7 @@ document.addEventListener('click', e => {
       render();
       toast('Disconnected account');
     }
+    return;
   }
 });
 
